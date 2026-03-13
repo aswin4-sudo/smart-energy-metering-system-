@@ -91,11 +91,7 @@
 | Appliance | Model File | Accuracy | Training Data | Architecture |
 |-----------|------------|----------|---------------|--------------|
 | Refrigerator | `fridge_nilm_lstm.keras` | 92% | 50,000 cycles | 3-layer LSTM |
-| Air Conditioner | `ac_nilm_lstm.keras` | 88% | 35,000 cycles | 3-layer LSTM |
-| Water Heater | `heater_nilm_lstm.keras` | 85% | 25,000 cycles | 3-layer LSTM |
-| Washing Machine | `wm_nilm_lstm.keras` | 83% | 20,000 cycles | 3-layer LSTM |
-| Induction Stove | `stove_nilm_lstm.keras` | 81% | 15,000 cycles | 3-layer LSTM |
-| Microwave | `microwave_nilm_lstm.keras` | 87% | 18,000 cycles | 3-layer LSTM |
+
 
 - **Feature extraction:** Voltage, Current, Power, Power Factor, Timestamp (hour/minute)
 - **Sequence length:** 60 seconds (60 timesteps) for context
@@ -110,11 +106,5 @@
 - **Queue management system** for multiple concurrent users
 - **Intelligent fallback** when API is unavailable:
 
-```python
-def generate_smart_fallback(user_id, summary):
-    if total_kwh > 15:
-        return "Install smart load controllers for heavy machinery..."
-    elif total_kwh > 5:
-        return "Upgrade to IE4 premium efficiency motors..."
-    else:
+
         return "Schedule regular equipment maintenance..."
