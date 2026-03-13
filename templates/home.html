@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitMinds | Smart Energy Intelligence Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --quantum-blue: #00f0ff;
+            --neon-purple: #9d00ff;
+            --cyber-green: #00ffaa;
+            --electric-yellow: #ffea00;
+            --plasma-orange: #ff6b35;
+            --matrix-black: #0a0a14;
+            --dark-space: #05050a;
+            --hologram-white: #e0e0ff;
+            --gradient-blue: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-purple: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-cyber: linear-gradient(135deg, #00f0ff 0%, #9d00ff 50%, #00ffaa 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--dark-space);
+            color: var(--hologram-white);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .cosmic-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(to bottom, #0a0a14, #1a0033, #0a0a14);
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            animation: twinkle 4s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* Energy Particles Animation */
+        .energy-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--quantum-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--quantum-blue);
+            animation: float-up 15s infinite linear;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--quantum-blue);
+            font-size: 2rem;
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 5px var(--quantum-blue));
+            }
+            50% { 
+                filter: drop-shadow(0 0 20px var(--quantum-blue));
+            }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--hologram-white);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--quantum-blue);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--quantum-blue);
+            border: 2px solid var(--quantum-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--quantum-blue);
+            color: var(--dark-space);
+            box-shadow: 0 0 30px var(--quantum-blue);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--quantum-blue), var(--neon-purple));
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(157, 0, 255, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 50px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .hero-text {
+            animation: slideInLeft 1s ease;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--quantum-blue) 0%, var(--neon-purple) 50%, var(--cyber-green) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { 
+                background-position: 0% 50%;
+            }
+            50% { 
+                background-position: 100% 50%;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: rgba(224, 224, 255, 0.8);
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .hero-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .feature-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 30px;
+            font-size: 0.95rem;
+        }
+
+        .feature-tag i {
+            color: var(--cyber-green);
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .btn-large {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+        }
+
+        /* 3D Energy Visualization */
+        .hero-visual {
+            position: relative;
+            animation: slideInRight 1s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .energy-orb {
+            width: 500px;
+            height: 500px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .orb-core {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--quantum-blue) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        .orb-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--neon-purple);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .orb-ring:nth-child(2) {
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            animation-duration: 8s;
+            animation-direction: reverse;
+            border-color: var(--cyber-green);
+        }
+
+        .orb-ring:nth-child(3) {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            animation-duration: 6s;
+            border-color: var(--electric-yellow);
+        }
+
+        /* Floating Metrics */
+        .floating-metrics {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .metric-card {
+            position: absolute;
+            padding: 15px 20px;
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 10px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .metric-card:nth-child(1) {
+            top: 10%;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .metric-card:nth-child(2) {
+            top: 30%;
+            right: -100px;
+            animation-delay: 1s;
+        }
+
+        .metric-card:nth-child(3) {
+            bottom: 30%;
+            left: -100px;
+            animation-delay: 2s;
+        }
+
+        .metric-card:nth-child(4) {
+            bottom: 10%;
+            right: -100px;
+            animation-delay: 3s;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--quantum-blue);
+            font-family: 'Orbitron', monospace;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: rgba(224, 224, 255, 0.7);
+            margin-top: 5px;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 100px 50px;
+            background: linear-gradient(to bottom, transparent, rgba(157, 0, 255, 0.05), transparent);
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            color: rgba(224, 224, 255, 0.7);
+            margin-bottom: 80px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: rgba(10, 10, 20, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--quantum-blue);
+            box-shadow: 0 20px 40px rgba(0, 240, 255, 0.2);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--quantum-blue), var(--neon-purple));
+            border-radius: 20px;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .feature-card:nth-child(2) .feature-icon {
+            background: linear-gradient(135deg, var(--neon-purple), var(--cyber-green));
+        }
+
+        .feature-card:nth-child(3) .feature-icon {
+            background: linear-gradient(135deg, var(--cyber-green), var(--electric-yellow));
+        }
+
+        .feature-card:nth-child(4) .feature-icon {
+            background: linear-gradient(135deg, var(--electric-yellow), var(--plasma-orange));
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .feature-description {
+            color: rgba(224, 224, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            color: rgba(224, 224, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-list li i {
+            color: var(--cyber-green);
+            font-size: 0.8rem;
+        }
+
+        /* Real-time Monitoring Preview */
+        .monitoring-preview {
+            padding: 100px 50px;
+            position: relative;
+        }
+
+        .preview-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .preview-visual {
+            position: relative;
+        }
+
+        .dashboard-mockup {
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .mockup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .mockup-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            color: var(--quantum-blue);
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 15px;
+            background: rgba(0, 255, 170, 0.1);
+            border: 1px solid var(--cyber-green);
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--cyber-green);
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .mockup-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .stat-box {
+            padding: 20px;
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(224, 224, 255, 0.6);
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--quantum-blue);
+            font-family: 'Orbitron', monospace;
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+        }
+
+        .stat-unit {
+            font-size: 1rem;
+            color: rgba(224, 224, 255, 0.7);
+        }
+
+        .chart-container {
+            margin-top: 30px;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(to top, rgba(0, 240, 255, 0.2), transparent);
+            clip-path: polygon(
+                0% 100%,
+                5% 85%,
+                10% 70%,
+                15% 75%,
+                20% 60%,
+                25% 65%,
+                30% 50%,
+                35% 55%,
+                40% 40%,
+                45% 45%,
+                50% 30%,
+                55% 35%,
+                60% 25%,
+                65% 30%,
+                70% 20%,
+                75% 25%,
+                80% 15%,
+                85% 20%,
+                90% 10%,
+                95% 15%,
+                100% 5%,
+                100% 100%
+            );
+        }
+
+        .preview-text {
+            animation: fadeIn 1.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .preview-heading {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .preview-description {
+            font-size: 1.2rem;
+            color: rgba(224, 224, 255, 0.8);
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .preview-features {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .preview-feature {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .preview-feature-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 10px;
+            color: var(--quantum-blue);
+            font-size: 1.2rem;
+        }
+
+        .preview-feature-text {
+            flex: 1;
+        }
+
+        .preview-feature-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .preview-feature-desc {
+            font-size: 0.95rem;
+            color: rgba(224, 224, 255, 0.6);
+        }
+
+        /* AI Features Section */
+        .ai-section {
+            padding: 100px 50px;
+            background: linear-gradient(135deg, rgba(157, 0, 255, 0.05) 0%, rgba(0, 240, 255, 0.05) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .ai-brain {
+            width: 300px;
+            height: 300px;
+            margin: 50px auto;
+            position: relative;
+        }
+
+        .brain-core {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--neon-purple) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: brain-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes brain-pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .neural-network {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .neural-node {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--quantum-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--quantum-blue);
+        }
+
+        .neural-connection {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--quantum-blue), transparent);
+            transform-origin: left center;
+            animation: data-flow 2s linear infinite;
+        }
+
+        @keyframes data-flow {
+            0% {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+        }
+
+        .ai-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .ai-feature-card {
+            padding: 30px;
+            background: rgba(10, 10, 20, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(157, 0, 255, 0.2);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .ai-feature-card:hover {
+            transform: scale(1.05);
+            border-color: var(--neon-purple);
+            box-shadow: 0 10px 30px rgba(157, 0, 255, 0.3);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 50px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 240, 255, 0.1));
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .cta-description {
+            font-size: 1.3rem;
+            color: rgba(224, 224, 255, 0.8);
+            margin-bottom: 50px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Footer */
+        footer {
+            padding: 50px;
+            background: rgba(10, 10, 20, 0.9);
+            border-top: 1px solid rgba(0, 240, 255, 0.2);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-column h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--quantum-blue);
+            font-family: 'Orbitron', monospace;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            padding: 8px 0;
+        }
+
+        .footer-links a {
+            color: rgba(224, 224, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--quantum-blue);
+        }
+
+        .footer-bottom {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(224, 224, 255, 0.1);
+            text-align: center;
+            color: rgba(224, 224, 255, 0.5);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--matrix-black);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-cyber);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: rgba(224, 224, 255, 0.7);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--quantum-blue);
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            color: rgba(224, 224, 255, 0.7);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--quantum-blue);
+            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
+        }
+
+        .btn-submit {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, var(--quantum-blue), var(--neon-purple));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(157, 0, 255, 0.4);
+        }
+
+        .auth-divider {
+            text-align: center;
+            margin: 20px 0;
+            color: rgba(224, 224, 255, 0.5);
+            position: relative;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: rgba(224, 224, 255, 0.2);
+        }
+
+        .auth-divider::before {
+            left: 0;
+        }
+
+        .auth-divider::after {
+            right: 0;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(224, 224, 255, 0.7);
+        }
+
+        .auth-switch a {
+            color: var(--quantum-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .auth-switch a:hover {
+            color: var(--neon-purple);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-title {
+                font-size: 3.5rem;
+            }
+
+            .energy-orb {
+                width: 400px;
+                height: 400px;
+            }
+
+            .metric-card {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 15px 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 80px 20px 50px;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-container {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Elements -->
+    <div class="cosmic-background"></div>
+    <div class="stars"></div>
+    <div class="energy-particles"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-bolt"></i>
+                BitMinds
+            </a>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#monitoring" class="nav-link">Monitoring</a>
+                <a href="#ai" class="nav-link">AI Insights</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <div class="auth-buttons">
+                <button class="btn btn-outline" onclick="openModal('login')">Login</button>
+                <button class="btn btn-primary" onclick="openModal('signup')">Get Started</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">Revolutionize Your Energy Management</h1>
+                <p class="hero-subtitle">Harness the power of AI-driven insights and real-time monitoring to optimize your energy consumption</p>
+                
+                <div class="hero-features">
+                    <div class="feature-tag">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Real-time Analytics</span>
+                    </div>
+                    <div class="feature-tag">
+                        <i class="fas fa-brain"></i>
+                        <span>AI Predictions</span>
+                    </div>
+                    <div class="feature-tag">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Secure & Reliable</span>
+                    </div>
+                </div>
+
+                <div class="hero-cta">
+                    <button class="btn btn-primary btn-large" onclick="openModal('signup')">
+                        Start Free Trial
+                        <i class="fas fa-arrow-right" style="margin-left: 10px;"></i>
+                    </button>
+                    <button class="btn btn-outline btn-large">
+                        Watch Demo
+                        <i class="fas fa-play-circle" style="margin-left: 10px;"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="energy-orb">
+                    <div class="orb-core"></div>
+                    <div class="orb-ring"></div>
+                    <div class="orb-ring"></div>
+                    <div class="orb-ring"></div>
+                    
+                    <div class="floating-metrics">
+                        <div class="metric-card">
+                            <div class="metric-value">245.8V</div>
+                            <div class="metric-label">Voltage</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">15.4A</div>
+                            <div class="metric-label">Current</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">3.77kW</div>
+                            <div class="metric-label">Power</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">₹2,450</div>
+                            <div class="metric-label">Savings/Month</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <h2 class="section-title">Powerful Features</h2>
+        <p class="section-subtitle">Everything you need to take control of your energy consumption and reduce costs</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <h3 class="feature-title">Real-Time Monitoring</h3>
+                <p class="feature-description">Track voltage, current, power, and consumption metrics in real-time with millisecond precision</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Live data streaming</li>
+                    <li><i class="fas fa-check"></i> Instant alerts & notifications</li>
+                    <li><i class="fas fa-check"></i> Historical data analysis</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-area"></i>
+                </div>
+                <h3 class="feature-title">Advanced Analytics</h3>
+                <p class="feature-description">Comprehensive charts and graphs to visualize your energy patterns and identify optimization opportunities</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Monthly consumption trends</li>
+                    <li><i class="fas fa-check"></i> Peak usage analysis</li>
+                    <li><i class="fas fa-check"></i> Comparative reports</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3 class="feature-title">AI Recommendations</h3>
+                <p class="feature-description">Get personalized suggestions powered by machine learning to optimize your energy usage</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Smart scheduling</li>
+                    <li><i class="fas fa-check"></i> Equipment efficiency tips</li>
+                    <li><i class="fas fa-check"></i> Cost reduction strategies</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <h3 class="feature-title">Bill Prediction</h3>
+                <p class="feature-description">Accurately forecast your upcoming electricity bills based on current consumption patterns</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> 60-day projections</li>
+                    <li><i class="fas fa-check"></i> Tariff calculations</li>
+                    <li><i class="fas fa-check"></i> Budget planning tools</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-plug"></i>
+                </div>
+                <h3 class="feature-title">NILM Technology</h3>
+                <p class="feature-description">Individual device monitoring using Non-Intrusive Load Monitoring for granular insights</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Device-level tracking</li>
+                    <li><i class="fas fa-check"></i> Appliance efficiency scores</li>
+                    <li><i class="fas fa-check"></i> Usage patterns per device</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">Enterprise Security</h3>
+                <p class="feature-description">Bank-grade security with encrypted data transmission and secure cloud storage</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> End-to-end encryption</li>
+                    <li><i class="fas fa-check"></i> SOC 2 compliance</li>
+                    <li><i class="fas fa-check"></i> Regular security audits</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-time Monitoring Preview -->
+    <section class="monitoring-preview" id="monitoring">
+        <div class="preview-container">
+            <div class="preview-visual">
+                <div class="dashboard-mockup">
+                    <div class="mockup-header">
+                        <h3 class="mockup-title">Energy Dashboard</h3>
+                        <div class="live-indicator">
+                            <div class="live-dot"></div>
+                            <span>LIVE</span>
+                        </div>
+                    </div>
+                    <div class="mockup-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Voltage</div>
+                            <div class="stat-value">
+                                238.5<span class="stat-unit">V</span>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Current</div>
+                            <div class="stat-value">
+                                12.8<span class="stat-unit">A</span>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Power</div>
+                            <div class="stat-value">
+                                3.05<span class="stat-unit">kW</span>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Today's Usage</div>
+                            <div class="stat-value">
+                                45.2<span class="stat-unit">kWh</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-line"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="preview-text">
+                <h2 class="preview-heading">Monitor Everything in Real-Time</h2>
+                <p class="preview-description">
+                    Get instant visibility into your energy consumption with our advanced monitoring dashboard. Track every watt, identify anomalies, and make data-driven decisions to optimize your energy usage.
+                </p>
+                <div class="preview-features">
+                    <div class="preview-feature">
+                        <div class="preview-feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="preview-feature-text">
+                            <div class="preview-feature-title">Instant Updates</div>
+                            <div class="preview-feature-desc">Real-time data refresh every second</div>
+                        </div>
+                    </div>
+                    <div class="preview-feature">
+                        <div class="preview-feature-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="preview-feature-text">
+                            <div class="preview-feature-title">Smart Alerts</div>
+                            <div class="preview-feature-desc">Get notified of unusual consumption patterns</div>
+                        </div>
+                    </div>
+                    <div class="preview-feature">
+                        <div class="preview-feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="preview-feature-text">
+                            <div class="preview-feature-title">Mobile Access</div>
+                            <div class="preview-feature-desc">Monitor from anywhere, anytime</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Section -->
+    <section class="ai-section" id="ai">
+        <div class="ai-container">
+            <h2 class="section-title">AI-Powered Intelligence</h2>
+            <p class="section-subtitle">Our advanced AI analyzes your energy patterns and provides actionable insights</p>
+            
+            <div class="ai-brain">
+                <div class="brain-core"></div>
+                <div class="neural-network">
+                    <!-- Neural nodes and connections would be generated dynamically -->
+                </div>
+            </div>
+
+            <div class="ai-features-grid">
+                <div class="ai-feature-card">
+                    <i class="fas fa-brain" style="font-size: 2.5rem; color: var(--neon-purple); margin-bottom: 20px;"></i>
+                    <h3 style="margin-bottom: 15px;">Predictive Analytics</h3>
+                    <p style="color: rgba(224, 224, 255, 0.7);">Forecast future consumption based on historical patterns and external factors</p>
+                </div>
+                <div class="ai-feature-card">
+                    <i class="fas fa-lightbulb" style="font-size: 2.5rem; color: var(--cyber-green); margin-bottom: 20px;"></i>
+                    <h3 style="margin-bottom: 15px;">Smart Recommendations</h3>
+                    <p style="color: rgba(224, 224, 255, 0.7);">Receive personalized tips to optimize energy usage and reduce costs</p>
+                </div>
+                <div class="ai-feature-card">
+                    <i class="fas fa-chart-line" style="font-size: 2.5rem; color: var(--quantum-blue); margin-bottom: 20px;"></i>
+                    <h3 style="margin-bottom: 15px;">Anomaly Detection</h3>
+                    <p style="color: rgba(224, 224, 255, 0.7);">Automatically identify unusual consumption patterns and potential issues</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Ready to Transform Your Energy Management?</h2>
+            <p class="cta-description">Join thousands of businesses saving up to 30% on their energy bills with BitMinds</p>
+            <div class="cta-buttons">
+                <button class="btn btn-primary btn-large" onclick="openModal('signup')">
+                    Start Your Free Trial
+                </button>
+                <button class="btn btn-outline btn-large">
+                    Schedule a Demo
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>BitMinds</h4>
+                <p style="color: rgba(224, 224, 255, 0.6); line-height: 1.6;">
+                    Revolutionizing energy management with cutting-edge AI and real-time monitoring technology.
+                </p>
+            </div>
+            <div class="footer-column">
+                <h4>Product</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">API Documentation</a></li>
+                    <li><a href="#">Case Studies</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Company</h4>
+                <ul class="footer-links">
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Connect</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">GitHub</a></li>
+                    <li><a href="#">YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 BitMinds. All rights reserved. | Privacy Policy | Terms of Service</p>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('login')">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">Welcome Back</h2>
+            </div>
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn-submit">Login</button>
+            </form>
+            <div class="auth-divider">OR</div>
+            <button class="btn btn-outline" style="width: 100%;">
+                <i class="fab fa-google" style="margin-right: 10px;"></i>
+                Continue with Google
+            </button>
+            <div class="auth-switch">
+                Don't have an account? <a href="#" onclick="switchModal('signup')">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signupModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('signup')">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">Create Account</h2>
+            </div>
+            <form class="auth-form" id="signupForm">
+    <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-input" placeholder="Enter your name" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" placeholder="Enter your email" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" placeholder="Create a password" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" class="form-input" placeholder="Confirm your password" required>
+    </div>
+    <button type="submit" class="btn-submit">Create Account</button>
+</form>
+            <div class="auth-divider">OR</div>
+            <button class="btn btn-outline" style="width: 100%;">
+                <i class="fab fa-google" style="margin-right: 10px;"></i>
+                Sign up with Google
+            </button>
+            <div class="auth-switch">
+                Already have an account? <a href="#" onclick="switchModal('login')">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate stars
+        function generateStars() {
+            const starsContainer = document.querySelector('.stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 4 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Generate energy particles
+        function generateParticles() {
+            const particlesContainer = document.querySelector('.energy-particles');
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                
+                const colors = ['var(--quantum-blue)', 'var(--neon-purple)', 'var(--cyber-green)'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.background = color;
+                particle.style.boxShadow = `0 0 10px ${color}`;
+                
+                particlesContainer.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 15000);
+            }, 500);
+        }
+
+        // Modal functions
+        function openModal(type) {
+            const modal = document.getElementById(type + 'Modal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(type) {
+            const modal = document.getElementById(type + 'Modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function switchModal(type) {
+            closeModal(type === 'login' ? 'signup' : 'login');
+            setTimeout(() => openModal(type), 300);
+        }
+
+        // FIXED FORM SUBMISSIONS - Update in home.html:
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = e.target[0].value;
+    const password = e.target[1].value;
+    
+    try {
+        const response = await fetch('/api/auth/login', {  // CORRECT ENDPOINT
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem('token', data.token);
+            window.location.href = `/dashboard?token=${data.token}`;  // ✅ WITH TOKEN
+        } else {
+            const errorData = await response.json();
+            alert(errorData.error || 'Login failed. Check your credentials.');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('Network error. Please try again.');
+    }
+});
+
+// Replace the signup form handler in home.html with this:
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    console.log('=== SIGNUP PROCESS STARTED ===');
+    
+    const inputs = e.target.querySelectorAll('input');
+    const formData = {
+        name: inputs[0].value.trim(),
+        email: inputs[1].value.trim().toLowerCase(),
+        password: inputs[2].value,
+        confirmPassword: inputs[3].value
+    };
+    
+    // Basic validation
+    if (formData.password !== formData.confirmPassword) {
+        alert('❌ Passwords do not match!');
+        return;
+    }
+    
+    if (formData.password.length < 6) {
+        alert('❌ Password must be at least 6 characters!');
+        return;
+    }
+    
+    const submitBtn = e.target.querySelector('.btn-submit');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+    
+    try {
+        console.log('Sending POST request to /api/auth/signup');
+        
+        const response = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                name: formData.name,
+                email: formData.email,
+                password: formData.password
+            })
+        });
+        
+        console.log('Response status:', response.status);
+        
+        let data;
+        try {
+            data = await response.json();
+        } catch (parseError) {
+            console.error('Failed to parse JSON:', parseError);
+            throw new Error('Server returned invalid response');
+        }
+        
+        console.log('Parsed data:', data);
+        
+        if (response.ok) {
+            console.log('=== SIGNUP SUCCESSFUL ===');
+            alert('✅ Account created successfully! Please login with your credentials.');
+            closeModal('signup');
+            // Clear form
+            e.target.reset();
+            // Optionally open login modal
+            setTimeout(() => openModal('login'), 500);
+        } else {
+            console.error('Signup failed:', data.error);
+            alert('❌ ' + (data.error || 'Signup failed. Please try again.'));
+        }
+    } catch (error) {
+        console.error('=== SIGNUP ERROR ===');
+        console.error('Error:', error);
+        alert('❌ Network error: ' + error.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    }
+});
+        // Initialize animations
+        window.addEventListener('load', () => {
+            generateStars();
+            generateParticles();
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(10, 10, 20, 0.95)';
+                nav.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.3)';
+            } else {
+                nav.style.background = 'rgba(10, 10, 20, 0.8)';
+                nav.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

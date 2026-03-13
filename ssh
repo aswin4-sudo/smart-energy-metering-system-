@@ -1,0 +1,60 @@
+
+# Replace the scheduler section in app.py with this thread-safe version:
+
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.executors.pool import ThreadPoolExecutor
+
+def daily_ai_task():
+    """Automatically generate and store recommendations at midnight"""
+    # Use app.app_context() for thread safety
+    with app.app_context():
+        try:
+            # Your existing AI task code here
+            logging.info("Daily AI task executed successfully")
+        except Exception as e:
+            logging.error(f"Daily AI task failed: {str(e)}")
+
+# Thread-safe scheduler configuration
+def init_scheduler():
+    """Initialize scheduler only in main thread"""
+    import threading
+    if threading.current_thread() is threading.main_thread():
+        try:
+            executors = {
+                'default': ThreadPoolExecutor(20),
+            }
+            job_defaults = {
+                'coalesce': False,
+                'max_instances': 1
+            }
+            
+            scheduler = BackgroundScheduler(
+                executors=executors,
+                job_defaults=job_defaults,
+                timezone='UTC'
+            )
+            
+            # Add the job
+            scheduler.add_job(
+                daily_ai_task,
+                'cron',
+                hour=0,
+                minute=1,
+                id='daily_ai_task',
+                replace_existing=True
+            )
+            
+            scheduler.start()
+            
+            # Register shutdown handler
+            atexit.register(lambda: scheduler.shutdown(wait=False))
+            
+            logging.info("Scheduler initialized successfully")
+            return scheduler
+        except Exception as e:
+            logging.error(f"Failed to initialize scheduler: {str(e)}")
+            return None
+    return None
+
+# Initialize scheduler (add this near the end of app.py, before the if __name__ == '__main__' block)
+scheduler = init_scheduler()

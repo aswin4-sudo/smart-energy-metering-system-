@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitMinds | Energy Intelligence</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <style>
+        :root {
+            --quantum-blue: #00f0ff;
+            --neon-purple: #9d00ff;
+            --cyber-green: #00ffaa;
+            --matrix-black: #0a0a14;
+            --dark-space: #05050a;
+            --hologram-white: #e0e0ff;
+            --card-bg: rgba(10, 10, 20, 0.7);
+            --glow-blue: 0 0 15px rgba(0, 240, 255, 0.5);
+            --glow-purple: 0 0 15px rgba(157, 0, 255, 0.5);
+            --gradient-blue: linear-gradient(135deg, var(--quantum-blue), #0066ff);
+            --gradient-purple: linear-gradient(135deg, var(--neon-purple), #ff00e4);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', 'Segoe UI', sans-serif;
+        }
+        @font-face {
+            font-family: 'Orbitron';
+            src: url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap');
+        }
+        body {
+            background-color: var(--dark-space);
+            color: var(--hologram-white);
+            background-image:
+                radial-gradient(circle at 25% 25%, rgba(0, 240, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(157, 0, 255, 0.1) 0%, transparent 50%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        /* Holographic header */
+        .header {
+            background: var(--matrix-black);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: var(--glow-blue);
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gradient-blue);
+            animation: borderFlow 6s linear infinite;
+        }
+        @keyframes borderFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 500;
+            margin: 0;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+        .header p {
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            opacity: 0.8;
+            letter-spacing: 1px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        /* Cyber status bar */
+        .status-bar {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem auto;
+            max-width: 1200px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--cyber-green);
+            box-shadow: 0 0 10px var(--cyber-green);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .last-updated {
+            color: rgba(224, 224, 255, 0.7);
+            font-family: 'Segoe UI', sans-serif;
+        }
+        /* Main dashboard grid */
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        /* Holographic card design */
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), var(--glow-blue);
+            border-color: rgba(0, 240, 255, 0.3);
+        }
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        .stat-card h2 {
+            font-size: 1.1rem;
+            color: var(--quantum-blue);
+            margin-bottom: 1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin: 0.5rem 0;
+            color: white;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: -1px;
+        }
+        .stat-card .unit {
+            font-size: 1rem;
+            color: rgba(224, 224, 255, 0.7);
+            font-weight: 400;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        /* Special bill card */
+        .bill-card {
+            grid-column: span 2;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(157, 0, 255, 0.2));
+            border: 1px solid rgba(157, 0, 255, 0.2);
+            box-shadow: var(--glow-purple);
+        }
+        .bill-card h2 {
+            color: white;
+        }
+        .bill-card .value {
+            font-size: 3rem;
+            color: white;
+        }
+        .bill-card .unit {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        /* Gauge cards */
+        .gauge-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .gauge-container {
+            position: relative;
+            width: 200px;
+            height: 120px;
+            margin: 20px auto;
+        }
+        .gauge {
+            width: 100%;
+            height: 100%;
+        }
+        .gauge-reading {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: white;
+            font-family: 'Orbitron', monospace;
+            text-align: center;
+        }
+        .gauge-unit {
+            font-size: 1rem;
+            color: rgba(224, 224, 255, 0.7);
+            font-weight: 400;
+            display: block;
+            margin-top: 5px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        /* Bill calculation form */
+        .bill-form {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .bill-form input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(157, 0, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 120px;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .bill-form input:focus {
+            outline: none;
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 0 2px rgba(157, 0, 255, 0.2);
+        }
+        .bill-form button {
+            background: var(--gradient-purple);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        .bill-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(157, 0, 255, 0.4);
+        }
+        .predict-btn {
+            background: var(--gradient-purple);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            width: 100%;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            box-shadow: var(--glow-purple);
+            position: relative;
+            z-index: 10;
+        }
+
+        .predict-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(157, 0, 255, 0.5);
+        }
+
+        .predict-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Add this to ensure the button is clickable */
+        .bill-card {
+            position: relative;
+        }
+
+        .bill-card::before {
+            z-index: 1;
+        }
+        /* Month selector */
+        .month-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            background: var(--card-bg);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+        .month-selector label {
+            font-size: 1rem;
+            color: var(--quantum-blue);
+            margin-right: 1rem;
+        }
+        .month-selector select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            flex-grow: 1;
+            max-width: 200px;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .month-selector select:focus {
+            outline: none;
+            border-color: var(--quantum-blue);
+            box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.2);
+        }
+        .month-selector button {
+            background: var(--gradient-blue);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            margin-left: 1rem;
+        }
+        .month-selector button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 240, 255, 0.4);
+        }
+        /* Add this to your CSS */
+        .debug-border {
+            border: 2px solid red !important;
+        }
+
+        #bill, #bill-details {
+            transition: all 0.3s ease;
+        }
+
+        .predict-btn:active {
+            transform: scale(0.98);
+        }
+        /* AI Recommendations button */
+        .ai-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--gradient-purple);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 2rem auto;
+            max-width: 300px;
+            text-decoration: none;
+            box-shadow: var(--glow-purple);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        .ai-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 0%,
+                transparent 45%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 55%,
+                transparent 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+        .ai-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(157, 0, 255, 0.6);
+        }
+        .ai-button i {
+            transition: transform 0.3s ease;
+        }
+        .ai-button:hover i {
+            transform: translateX(5px);
+        }
+        /* Loading animation */
+        .loading {
+            position: relative;
+            color: rgba(224, 224, 255, 0.7);
+        }
+        .loading::after {
+            content: '...';
+            position: absolute;
+            animation: dots 1.5s infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        /* Chart loading state */
+        .chart-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            color: var(--hologram-white);
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .chart-loading i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--quantum-blue);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .bill-card {
+                grid-column: span 1;
+            }
+            .stat-card .value {
+                font-size: 2rem;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .month-selector select {
+                z-index: 10;
+                position: relative;
+                cursor: pointer;
+                -webkit-appearance: menulist;
+                -moz-appearance: menulist;
+                appearance: menulist;
+                background-color: rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(0, 240, 255, 0.3);
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 6px;
+                font-size: 1rem;
+            }
+            .month-selector select:focus {
+                outline: none;
+                border-color: var(--quantum-blue);
+                box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.2);
+            }
+            .chart-loading, .chart-error {
+                pointer-events: none;
+            }
+        }
+        @media (max-width: 480px) {
+            .status-bar {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            .bill-form {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1><i class="fas fa-bolt"></i>BitMinds Smart Energy</h1>
+        <p>Real-time energy monitoring system</p>
+    </header>
+    <main class="dashboard">
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>SYSTEM ONLINE</span>
+            </div>
+            <div class="last-updated">Last updated: <span id="update-time">--:--:--</span></div>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card gauge-card">
+                <h2><i class="fas fa-bolt"></i> VOLTAGE</h2>
+                <div class="gauge-container">
+                    <svg class="gauge" viewBox="0 0 200 120">
+                        <!-- Gauge background -->
+                        <path d="M10,100 A90,90 0 0,1 190,100" stroke="rgba(224, 224, 255, 0.1)" stroke-width="10" fill="none" />
+                        <!-- Gauge markings -->
+                        <path d="M30,100 L40,90" stroke="rgba(0, 240, 255, 0.5)" stroke-width="1" />
+                        <path d="M60,62 L70,56" stroke="rgba(0, 240, 255, 0.5)" stroke-width="1" />
+                        <path d="M100,50 L100,38" stroke="rgba(0, 240, 255, 0.5)" stroke-width="1" />
+                        <path d="M140,62 L130,56" stroke="rgba(0, 240, 255, 0.5)" stroke-width="1" />
+                        <path d="M170,100 L160,90" stroke="rgba(0, 240, 255, 0.5)" stroke-width="1" />
+                        <!-- Gauge min/mid/max labels -->
+                        <text x="30" y="115" font-size="8" fill="rgba(0, 240, 255, 0.7)">0V</text>
+                        <text x="100" y="30" font-size="8" fill="rgba(0, 240, 255, 0.7)" text-anchor="middle">250V</text>
+                        <text x="170" y="115" font-size="8" fill="rgba(0, 240, 255, 0.7)" text-anchor="end">500V</text>
+                        <!-- Gauge value level -->
+                        <path id="voltage-level" d="M10,100 A90,90 0 0,1 10,100" stroke="url(#voltageGradient)" stroke-width="10" fill="none" stroke-linecap="round" />
+                        <defs>
+                            <linearGradient id="voltageGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#00f0ff" />
+                                <stop offset="100%" stop-color="#0066ff" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Gauge needle -->
+                        <line id="voltage-needle" x1="100" y1="100" x2="100" y2="20" stroke="#9d00ff" stroke-width="2" />
+                        <circle cx="100" cy="100" r="6" fill="#0a0a14" stroke="#9d00ff" stroke-width="1" />
+                    </svg>
+                    <div class="gauge-reading">
+                        <span id="voltage">--</span>
+                        <span class="gauge-unit">VOLTS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card gauge-card">
+                <h2><i class="fas fa-tachometer-alt"></i> CURRENT</h2>
+                <div class="gauge-container">
+                    <svg class="gauge" viewBox="0 0 200 120">
+                        <!-- Gauge background -->
+                        <path d="M10,100 A90,90 0 0,1 190,100" stroke="rgba(224, 224, 255, 0.1)" stroke-width="10" fill="none" />
+                        <!-- Gauge markings -->
+                        <path d="M30,100 L40,90" stroke="rgba(0, 240, 255, 0.5)" stroke-width="1" />
+                        <path d="M60,62 L70,56" stroke="rgba(0, 240, 255, 0.5)" stroke-width="1" />
+                        <path d="M100,50 L100,38" stroke="rgba(0, 240, 255, 0.5)" stroke-width="1" />
+                        <path d="M140,62 L130,56" stroke="rgba(0, 240, 255, 0.5)" stroke-width="1" />
+                        <path d="M170,100 L160,90" stroke="rgba(0, 240, 255, 0.5)" stroke-width="1" />
+                        <!-- Gauge min/mid/max labels -->
+                        <text x="30" y="115" font-size="8" fill="rgba(0, 240, 255, 0.7)">0A</text>
+                        <text x="100" y="30" font-size="8" fill="rgba(0, 240, 255, 0.7)" text-anchor="middle">12.5A</text>
+                        <text x="170" y="115" font-size="8" fill="rgba(0, 240, 255, 0.7)" text-anchor="end">25A</text>
+                        <!-- Gauge value level -->
+                        <path id="current-level" d="M10,100 A90,90 0 0,1 10,100" stroke="url(#currentGradient)" stroke-width="10" fill="none" stroke-linecap="round" />
+                        <defs>
+                            <linearGradient id="currentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#00f0ff" />
+                                <stop offset="100%" stop-color="#0066ff" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Gauge needle -->
+                        <line id="current-needle" x1="100" y1="100" x2="100" y2="20" stroke="#9d00ff" stroke-width="2" />
+                        <circle cx="100" cy="100" r="6" fill="#0a0a14" stroke="#9d00ff" stroke-width="1" />
+                    </svg>
+                    <div class="gauge-reading">
+                        <span id="current">--</span>
+                        <span class="gauge-unit">AMPS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <h2><i class="fas fa-power-off"></i> POWER</h2>
+                <div class="value" id="power">--</div>
+                <span class="unit">WATTS</span>
+            </div>
+            <div class="stat-card">
+                <h2><i class="fas fa-chart-line"></i> CONSUMPTION</h2>
+                <div class="value" id="kwh">--</div>
+                <span class="unit">KILOWATT-HOURS</span>
+            </div>
+            <div class="stat-card">
+                <h2><i class="fas fa-wave-square"></i> FLUCTUATION</h2>
+                <div class="value" id="fluctuation">--</div>
+                <span class="unit">PERCENT</span>
+            </div>
+            <div class="stat-card bill-card">
+                <h2><i class="fas fa-file-invoice-dollar"></i> PROJECTED BILL (60 DAYS)</h2>
+                <div class="value" id="bill">₹0.00</div>
+                <span class="unit" id="bill-details">Click predict to calculate</span>
+                <button onclick="fetchPredictedBill()" class="predict-btn">
+                    <i class="fas fa-calculator"></i> PREDICT BILL
+                </button>
+            </div>
+        </div>
+        <button onclick="navigateToAI()" class="ai-button">
+    <i class="fas fa-robot"></i> AI RECOMMENDATIONS
+    <i class="fas fa-arrow-right"></i>
+</button> 
+
+<button onclick="navigateToNILM()" class="ai-button" style="margin-left: 1rem;">
+    <i class="fas fa-plug"></i> INDIVIDUAL MONITORING
+    <i class="fas fa-arrow-right"></i>
+</button>
+        <!-- Add this right after the AI Recommendations button -->
+   
+        <!-- Energy Consumption Chart -->
+        <div class="month-selector">
+            <label for="month-select"><i class="fas fa-calendar-alt"></i> SELECT MONTH:</label>
+            <select id="month-select">
+                <option value="2025-01">January 2025</option>
+                <option value="2025-02">February 2025</option>
+                <option value="2025-03">March 2025</option>
+                <option value="2025-04">April 2025</option>
+                <option value="2025-05">May 2025</option>
+                <option value="2025-06">June 2025</option>
+                <option value="2025-07">July 2025</option>
+                <option value="2025-08">August 2025</option>
+                <option value="2025-09">September 2025</option>
+                <option value="2025-10">October 2025</option>
+                <option value="2025-11">November 2025</option>
+                <option value="2025-12">December 2025</option>
+            </select>
+            <button id="load-month-btn" onclick="loadMonthData()">
+                <i class="fas fa-sync-alt"></i> LOAD DATA
+            </button>
+        </div>
+        <div id="consumption-chart" style="height: 400px;">
+            <div class="chart-loading">
+                <i class="fas fa-circle-notch"></i>
+                <p>Loading energy data...</p>
+            </div>
+        </div>
+    </main>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        // Global variables
+        
+
+function navigateToAI() {
+    const token = localStorage.getItem('token');
+    if (token) {
+        window.location.href = `/ai_recommendation?token=${token}`;
+    } else {
+        console.error('No token found');
+        window.location.href = '/';
+    }
+}
+function navigateToNILM() {
+    const token = localStorage.getItem('token');
+    if (token) {
+        window.location.href = `/nilm?token=${token}`;
+    } else {
+        console.error('No token found');
+        window.location.href = '/';
+    }
+}
+        let socket;
+        let currentChart = null;
+        let isChartLoading = false;
+        let chartRefreshInterval;
+        let lastDataTimestamp = 0;
+        let chartData = null;
+        let currentView = 'realtime';
+        let realtimeChart = null;
+
+        // DOM elements
+        const voltageElement = document.getElementById('voltage');
+        const currentElement = document.getElementById('current');
+        const powerElement = document.getElementById('power');
+        const kwhElement = document.getElementById('kwh');
+        const fluctuationElement = document.getElementById('fluctuation');
+        const updateTimeElement = document.getElementById('update-time');
+        const chartContainer = document.getElementById('consumption-chart');
+        const monthSelect = document.getElementById('month-select');
+        const loadMonthBtn = document.getElementById('load-month-btn');
+        const billElement = document.getElementById('bill');
+        const detailsElement = document.getElementById('bill-details');
+        const predictBtn = document.querySelector('.predict-btn');
+        // ADD AUTHENTICATION HEADERS - Add this function to index.html:
+
+function getAuthHeaders() {
+    const token = localStorage.getItem('token');
+    return {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+    };
+}
+
+        // Fixed updateGauge function
+       function updateGauge(id, value, max) {
+            try {
+                // Calculate percentage and angle
+                const percentage = Math.min(Math.max(value / max, 0), 1);
+                const angle = -90 + (percentage * 180); // -90 to +90 degrees
+                
+                // Get the needle element
+                const needle = document.getElementById(id + '-needle');
+                
+                if (!needle) {
+                    console.warn(`Needle element not found for: ${id}`);
+                    return;
+                }
+                
+                // Update needle rotation
+                needle.setAttribute('transform', `rotate(${angle}, 100, 100)`);
+                
+                // Update arc path
+                const levelPath = document.getElementById(id + '-level');
+                if (levelPath) {
+                    if (percentage === 0) {
+                        levelPath.setAttribute('d', 'M10,100 A90,90 0 0,1 10,100');
+                    } else {
+                        // Calculate the end point of the arc
+                        const startAngle = Math.PI; // 180 degrees in radians
+                        const endAngle = Math.PI + (Math.PI * percentage);
+                        
+                        const startX = 100 + 90 * Math.cos(startAngle);
+                        const startY = 100 + 90 * Math.sin(startAngle);
+                        const endX = 100 + 90 * Math.cos(endAngle);
+                        const endY = 100 + 90 * Math.sin(endAngle);
+                        
+                        // Determine if we need to use the large arc flag
+                        const largeArcFlag = percentage > 0.5 ? 1 : 0;
+                        
+                        // Update the path
+                        levelPath.setAttribute('d', `M${startX},${startY} A90,90 0 ${largeArcFlag},1 ${endX},${endY}`);
+                    }
+                }
+                
+            } catch (error) {
+                console.error(`Error updating gauge ${id}:`, error);
+            }
+        }
+
+
+        // ADDED: Function to save chart state to session storage
+        function saveChartState() {
+            
+            if (chartData) {
+                sessionStorage.setItem('lastChartData', JSON.stringify({
+                    data: chartData,
+                    month: monthSelect.value,
+                    timestamp: Date.now()
+                }));
+            }
+        }
+
+        // ADDED: Function to start real-time updates
+        function startRealtimeUpdates() {
+            console.log("Starting real-time updates");
+            document.querySelector('.status-dot').style.backgroundColor = 'var(--cyber-green)';
+            document.querySelector('.status-indicator span').textContent = 'REALTIME DATA';
+        }
+
+        // ADDED: Function to initialize bill prediction
+        function initBillPrediction() {
+            console.log("Bill prediction initialized");
+        }
+
+        // ADDED: Function to handle real-time chart updates
+        function updateRealtimeChart(data) {
+            console.log("Real-time chart update with:", data);
+        }
+
+        // Initialize WebSocket connection with enhanced options
+        function initWebSocket() {
+            console.log("Initializing WebSocket connection...");
+            
+            const socketUrl = window.location.origin;
+            socket = io(socketUrl, {
+                reconnectionAttempts: 10,
+                reconnectionDelay: 3000,
+                timeout: 20000,
+                transports: ['websocket', 'polling'],
+                forceNew: true
+            });
+            
+            socket.on('connect', () => {
+                console.log('Connected to WebSocket server with ID:', socket.id);
+                document.querySelector('.status-dot').style.backgroundColor = 'var(--cyber-green)';
+                document.querySelector('.status-indicator span').textContent = 'SYSTEM ONLINE';
+                
+                socket.emit('request_latest_data');
+            });
+            
+            socket.on('disconnect', (reason) => {
+                console.log('Disconnected from WebSocket server:', reason);
+                document.querySelector('.status-dot').style.backgroundColor = '#ff5555';
+                document.querySelector('.status-indicator span').textContent = 'SYSTEM OFFLINE';
+            });
+            
+            socket.on('energy_update', (data) => {
+                console.log("Received energy update:", data);
+                updateDashboard(data);
+            });
+            
+            socket.on('connect_error', (error) => {
+                console.error('WebSocket connection error:', error);
+                document.querySelector('.status-dot').style.backgroundColor = '#ff5555';
+                document.querySelector('.status-indicator span').textContent = 'CONNECTION ERROR';
+            });
+            
+            socket.on('reconnect_failed', () => {
+                console.error('Failed to reconnect');
+                document.querySelector('.status-dot').style.backgroundColor = '#ff5555';
+                document.querySelector('.status-indicator span').textContent = 'RECONNECT FAILED';
+            });
+        }
+
+        // Test WebSocket connection
+        function testWebSocket() {
+            if (socket && socket.connected) {
+                console.log("WebSocket connected, testing...");
+                socket.emit('test', {message: 'Test message'});
+            } else {
+                console.log("WebSocket not connected");
+            }
+        }
+                  
+// Function to fetch and display predicted bill
+async function fetchPredictedBill() {
+    console.log("Predict button clicked");
+    
+    // Show loading state
+    billElement.textContent = 'Calculating...';
+    detailsElement.textContent = 'Analyzing consumption patterns...';
+    predictBtn.disabled = true;
+    predictBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculating...';
+    
+    try {
+        console.log("Making API request...");
+        const startTime = Date.now();
+        
+        const response = await fetch('/api/predicted_bill', {
+            headers: {
+                ...getAuthHeaders(),
+                'Accept': 'application/json'
+            }
+        });
+        
+        console.log(`API response received (${Date.now() - startTime}ms)`);
+        
+        if (!response.ok) {
+            if (response.status === 404) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'No data available for prediction');
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log("API data:", data);
+        
+        if (data.error || data.status === 'no_data') {
+            billElement.textContent = 'N/A';
+            detailsElement.textContent = data.error || 'No data available for prediction';
+            return;
+        }
+        
+        // Update UI with detailed information
+        billElement.textContent = '₹' + data.predicted_bill.toLocaleString('en-IN', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        
+        // Format the details message
+        const startDate = new Date(data.data_range.start).toLocaleDateString('en-IN');
+        const endDate = new Date(data.data_range.end).toLocaleDateString('en-IN');
+        
+        detailsElement.innerHTML = `
+            7-day consumption: ${data.period_consumption.toFixed(2)} kWh<br>
+            (${startDate} to ${endDate})<br>
+            2-month projection: ${data.predicted_consumption.toFixed(2)} kWh<br>
+            <small>${data.note || ''}</small>
+        `;
+        
+    } catch (error) {
+        console.error('Prediction failed:', error);
+        billElement.textContent = 'Error';
+        detailsElement.textContent = error.message || 'Failed to calculate prediction';
+    } finally {
+        predictBtn.disabled = false;
+        predictBtn.innerHTML = '<i class="fas fa-calculator"></i> PREDICT BILL';
+    }
+}
+
+    // Show chart loading state
+    function showChartLoading() {
+        const chartContainer = document.getElementById('consumption-chart');
+        chartContainer.innerHTML = `
+            <div class="chart-loading">
+                <div style="
+                    width: 60px;
+                    height: 60px;
+                    margin: 0 auto 20px;
+                    border: 4px solid rgba(157, 0, 255, 0.2);
+                    border-top-color: #9d00ff;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                "></div>
+                <h3 style="margin-bottom: 10px;">Loading energy data...</h3>
+                <p style="opacity: 0.7;">This may take a moment</p>
+            </div>
+        `;
+    }
+// Show chart error with retry option
+function showChartError(message = "Unable to load energy consumption data") {
+    chartContainer.innerHTML = `
+        <div class="chart-error" style="
+            color: white; 
+            text-align: center; 
+            padding: 50px; 
+            font-family: 'Segoe UI', sans-serif;
+            animation: fadeIn 0.3s ease-out;
+        ">
+            <div style="
+                width: 60px;
+                height: 60px;
+                margin: 0 auto 20px;
+                background-color: rgba(255, 85, 85, 0.1);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            ">
+                <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem; color: #ff5555;"></i>
+            </div>
+            <h3 style="margin-bottom: 10px;">${message}</h3>
+            <p style="margin-bottom: 20px; opacity: 0.7;">Please check your connection and try again</p>
+            <button id="retry-button" class="retry-btn" style="
+                background: rgba(157, 0, 255, 0.2);
+                border: 1px solid #9d00ff;
+                color: white;
+                padding: 8px 16px;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.2s;
+            ">
+                <i class="fas fa-sync-alt" style="margin-right: 8px;"></i> Retry
+            </button>
+        </div>
+    `;
+    
+    document.getElementById('retry-button').addEventListener('click', () => {
+        if (currentView === 'historical') {
+            loadMonthData();
+        } else {
+            socket.connect();
+        }
+    });
+}
+
+// Create historical chart with filled area under the line
+function createHistoricalChart(chartData, monthName) {
+    if (currentChart) {
+        currentChart.destroy();
+    }
+    
+    // Process data for continuous line chart
+    // First, sort the data by timestamp to ensure proper ordering
+    chartData.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    
+    // Group data by day and calculate daily totals
+    const dailyData = {};
+    chartData.forEach(point => {
+        const day = point.day;
+        if (!dailyData[day]) {
+            dailyData[day] = {
+                total: 0,
+                count: 0
+            };
+        }
+        dailyData[day].total += point.y;
+        dailyData[day].count++;
+    });
+    
+    // Calculate average consumption per day and convert to kWh
+    const seriesData = Object.keys(dailyData)
+        .map(day => ({
+            day: parseInt(day),
+            consumption: dailyData[day].total / 1000 // Convert to kWh
+        }))
+        .sort((a, b) => a.day - b.day);
+    
+    // Prepare data for Highcharts
+    const categories = seriesData.map(item => item.day.toString());
+    const data = seriesData.map(item => item.consumption);
+    
+    currentChart = Highcharts.chart('consumption-chart', {
+        chart: {
+            type: 'area',
+            backgroundColor: 'transparent',
+            style: {
+                fontFamily: 'Segoe UI, sans-serif'
+            }
+        },
+        title: {
+            text: `Energy Consumption - ${monthName}`,
+            style: {
+                color: 'var(--hologram-white)',
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: '500',
+                fontSize: '18px'
+            }
+        },
+        xAxis: {
+            categories: categories,
+            title: {
+                text: 'Days (of the Month)',
+                style: {
+                    color: 'rgba(224, 224, 255, 0.7)'
+                }
+            },
+            gridLineColor: 'rgba(224, 224, 255, 0.1)',
+            labels: {
+                style: {
+                    color: 'rgba(224, 224, 255, 0.7)'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Consumption (kWh)',
+                style: {
+                    color: 'rgba(224, 224, 255, 0.7)'
+                }
+            },
+            min: 0,
+            gridLineColor: 'rgba(224, 224, 255, 0.1)',
+            labels: {
+                style: {
+                    color: 'rgba(224, 224, 255, 0.7)'
+                }
+            }
+        },
+        plotOptions: {
+            area: {
+                fillColor: {
+                    linearGradient: {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops: [
+                        [0, 'rgba(157, 0, 255, 0.6)'],
+                        [1, 'rgba(157, 0, 255, 0.1)']
+                    ]
+                },
+                lineWidth: 3,
+                color: '#9d00ff',
+                marker: {
+                    enabled: true,
+                    radius: 4,
+                    fillColor: '#00f0ff',
+                    lineColor: '#ffffff',
+                    lineWidth: 1
+                },
+                threshold: 0
+            }
+        },
+        series: [{
+            name: 'Energy Consumption',
+            data: data,
+            connectNulls: true
+        }],
+        tooltip: {
+            formatter: function() {
+                return `<b>Day ${this.x}</b><br/>Consumption: <b>${this.y.toFixed(2)} kWh</b>`;
+            },
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            borderColor: '#9d00ff',
+            borderRadius: 5,
+            style: {
+                color: 'white'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        }
+    });
+}
+function updateDashboard(data) {
+            console.log("Updating dashboard with:", data);
+            
+            if (!data) {
+                console.warn("No data received for dashboard update");
+                return;
+            }
+            
+            try {
+                // Update voltage
+                if (data.voltage !== undefined && data.voltage !== null) {
+                    const voltage = parseFloat(data.voltage);
+                    voltageElement.textContent = voltage.toFixed(1);
+                    updateGauge('voltage', voltage, 500); // 500V max
+                }
+                
+                // Update current
+                if (data.current !== undefined && data.current !== null) {
+                    const current = parseFloat(data.current);
+                    currentElement.textContent = current.toFixed(2);
+                    updateGauge('current', current, 25); // 25A max
+                }
+                
+                // Update power
+                if (data.power !== undefined && data.power !== null) {
+                    const power = parseFloat(data.power);
+                    powerElement.textContent = power.toFixed(0);
+                }
+                
+                // Update consumption
+                if (data.consumption !== undefined && data.consumption !== null) {
+                    const consumption = parseFloat(data.consumption);
+                    kwhElement.textContent = consumption.toFixed(3);
+                }
+                
+                // Update fluctuation
+                if (data.fluctuation !== undefined && data.fluctuation !== null) {
+                    const fluctuation = parseFloat(data.fluctuation);
+                    fluctuationElement.textContent = fluctuation.toFixed(1);
+                }
+                
+                // Update timestamp
+                const now = new Date();
+                updateTimeElement.textContent = 
+                    `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+                
+                console.log("Dashboard updated successfully");
+                
+            } catch (error) {
+                console.error("Error updating dashboard:", error);
+            }
+        }
+// Load month data with timeout and error handling
+async function loadMonthData() {
+    if (isChartLoading) return;
+    isChartLoading = true;
+
+    const selectedMonth = monthSelect.value;
+    const monthName = monthSelect.options[monthSelect.selectedIndex].text;
+
+    showChartLoading();
+    try {
+        const response = await fetch(`/api/monthly?month=${selectedMonth}`, {
+            headers: getAuthHeaders()  // ADD THIS
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        chartData = await response.json();
+        createHistoricalChart(chartData, monthName);
+    } catch (error) {
+        console.error('Error loading time-series data:', error);
+        showChartError(error.message);
+    } finally {
+        isChartLoading = false;
+    }
+}
+// Initialize the dashboard
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("Dashboard initialized");
+    
+    // Initialize WebSocket connection
+    initWebSocket();
+    
+    // Initialize bill calculator
+    initBillPrediction();
+    
+    
+    // Set current month as default
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+    monthSelect.value = currentMonth;
+    
+    // ADDED: Try to restore chart from session storage
+    const savedData = sessionStorage.getItem('lastChartData');
+    if (savedData) {
+        const { data, month } = JSON.parse(savedData);
+        chartData = data;
+        monthSelect.value = month;
+        const monthName = monthSelect.options[monthSelect.selectedIndex].text;
+        createHistoricalChart(chartData, monthName);
+    }
+    
+    // ADDED: Save chart state when page is about to unload
+    window.addEventListener('beforeunload', saveChartState);
+    
+    // Event listeners
+    loadMonthBtn.addEventListener('click', loadMonthData);
+    monthSelect.addEventListener('change', () => {
+        if (currentView === 'historical') {
+            loadMonthData();
+        }
+    });
+    
+    // ADDED: Add a test button to the status bar for debugging
+    testButton.style.marginLeft = '10px';
+    testButton.style.padding = '5px 10px';
+    testButton.style.background = 'var(--gradient-blue)';
+    testButton.style.border = 'none';
+    testButton.style.borderRadius = '4px';
+    testButton.style.color = 'white';
+    testButton.style.cursor = 'pointer';
+});
+
+// Clean up on page unload
+window.addEventListener('beforeunload', () => {
+    if (socket) socket.disconnect();
+    clearInterval(chartRefreshInterval);
+});
+// ADD LOGOUT FUNCTIONALITY - Add this to index.html:
+
+function addLogoutButton() {
+    const header = document.querySelector('.header');
+    const logoutBtn = document.createElement('button');
+    logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+    logoutBtn.style.cssText = `
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        background: rgba(157, 0, 255, 0.2);
+        border: 1px solid var(--neon-purple);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: 'Orbitron', sans-serif;
+    `;
+    logoutBtn.onclick = () => {
+        localStorage.removeItem('token');
+        window.location.href = '/';
+    };
+    header.style.position = 'relative';
+    header.appendChild(logoutBtn);
+}
+
+// CALL THIS IN DOMContentLoaded:
+document.addEventListener('DOMContentLoaded', () => {
+    // ... existing code
+    addLogoutButton();  // ADD THIS LINE
+    
+    // Check if user is authenticated
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = '/';
+        return;
+    }
+});
+function navigateToPage(url) {
+    const token = getTokenFromStorage(); // Get from localStorage or wherever you store it
+    
+    // Use fetch with Authorization header
+    fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.href = url;
+        } else {
+            alert('Access denied');
+        }
+    });
+}
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handlers to your navigation links
+    document.getElementById('ai-recommendation-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        navigateToPage('/ai_recommendation');
+    });
+    
+    document.getElementById('nilm-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        navigateToPage('/nilm');
+    });
+});
+</script>
+</body>
+</html>

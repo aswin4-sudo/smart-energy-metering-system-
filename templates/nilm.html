@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitMinds | NILM Device Monitor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+    <script src="https://code.highcharts.com/modules/heatmap.js"></script>
+    <style>
+        :root {
+            --quantum-blue: #00f0ff;
+            --neon-purple: #9d00ff;
+            --cyber-green: #00ffaa;
+            --matrix-black: #0a0a14;
+            --dark-space: #05050a;
+            --hologram-white: #e0e0ff;
+            --card-bg: rgba(10, 10, 20, 0.7);
+            --glow-blue: 0 0 15px rgba(0, 240, 255, 0.5);
+            --glow-purple: 0 0 15px rgba(157, 0, 255, 0.5);
+            --glow-green: 0 0 15px rgba(0, 255, 170, 0.5);
+            --gradient-blue: linear-gradient(135deg, var(--quantum-blue), #0066ff);
+            --gradient-purple: linear-gradient(135deg, var(--neon-purple), #ff00e4);
+            --gradient-green: linear-gradient(135deg, var(--cyber-green), #00ff88);
+            --danger-red: #ff4757;
+            --warning-yellow: #feca57;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', 'Segoe UI', sans-serif;
+        }
+
+        @font-face {
+            font-family: 'Orbitron';
+            src: url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap');
+        }
+
+        body {
+            background-color: var(--dark-space);
+            color: var(--hologram-white);
+            background-image:
+                radial-gradient(circle at 25% 25%, rgba(0, 240, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(157, 0, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, transparent 0%, rgba(0, 240, 255, 0.02) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated matrix rain effect */
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.05;
+        }
+
+        .matrix-column {
+            position: absolute;
+            top: -100%;
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--cyber-green);
+            animation: matrixFall linear infinite;
+        }
+
+        @keyframes matrixFall {
+            to {
+                transform: translateY(200vh);
+            }
+        }
+
+        /* Header with scanning effect */
+        .header {
+            background: var(--matrix-black);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: var(--glow-blue);
+            z-index: 100;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.2), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 500;
+            margin: 0;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+
+        .header p {
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        /* Navigation tabs */
+        .nav-tabs {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            margin: 1.5rem auto;
+            max-width: 1400px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            z-index: 50;
+            position: relative;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--gradient-purple);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: var(--glow-purple);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            min-width: 140px;
+        }
+
+        .nav-tab::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 0%,
+                transparent 45%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 55%,
+                transparent 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(157, 0, 255, 0.6);
+        }
+
+        .nav-tab i {
+            transition: transform 0.3s ease;
+        }
+
+        .nav-tab:hover i {
+            transform: translateX(5px);
+        }
+
+        .nav-tab.active {
+            background: var(--gradient-blue);
+            box-shadow: var(--glow-blue);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+        }
+
+        .nav-tab.active:hover {
+            box-shadow: 0 6px 25px rgba(0, 240, 255, 0.6);
+        }
+
+        /* Main dashboard container */
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* System status overview */
+        .system-overview {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .system-overview::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.05) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .overview-metric {
+            text-align: center;
+        }
+
+        .overview-value {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+        }
+
+        .overview-label {
+            color: rgba(224, 224, 255, 0.7);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .overview-status {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(224, 224, 255, 0.7);
+            border: 1px solid rgba(224, 224, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Fridge Section */
+        .fridge-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--cyber-green);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fridge-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyber-green), transparent);
+            animation: scanline 3s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .fridge-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .fridge-icon {
+            font-size: 3rem;
+            color: var(--cyber-green);
+            filter: drop-shadow(0 0 15px var(--cyber-green));
+        }
+
+        .fridge-title {
+            font-size: 2rem;
+            color: var(--cyber-green);
+            letter-spacing: 2px;
+        }
+
+        .fridge-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .fridge-stat-card {
+            background: rgba(0, 255, 170, 0.05);
+            border: 1px solid rgba(0, 255, 170, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .fridge-stat-value {
+            font-size: 2rem;
+            color: var(--cyber-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .fridge-stat-label {
+            color: rgba(224, 224, 255, 0.7);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .fridge-cycle-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .fridge-on {
+            background: var(--cyber-green);
+            box-shadow: 0 0 15px var(--cyber-green);
+        }
+
+        .fridge-off {
+            background: #666;
+        }
+
+        /* Device cards grid */
+        .devices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .device-card {
+            background: rgba(10, 10, 20, 0.5);
+            border: 1px solid rgba(224, 224, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .device-card:hover {
+            border-color: var(--quantum-blue);
+            box-shadow: var(--glow-blue);
+            transform: translateY(-2px);
+        }
+
+        .device-card.fridge-card {
+            border-color: var(--cyber-green);
+            background: linear-gradient(135deg, rgba(0, 255, 170, 0.05), transparent);
+        }
+
+        .device-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .device-name {
+            font-size: 1.2rem;
+            color: var(--hologram-white);
+        }
+
+        .device-power {
+            font-size: 1.5rem;
+            color: var(--quantum-blue);
+        }
+
+        .device-energy {
+            font-size: 0.9rem;
+            color: rgba(224, 224, 255, 0.6);
+        }
+
+        .device-status {
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .status-on {
+            background: rgba(0, 255, 170, 0.2);
+            color: var(--cyber-green);
+            border: 1px solid var(--cyber-green);
+        }
+
+        .status-off {
+            background: rgba(255, 255, 255, 0.1);
+            color: #666;
+            border: 1px solid #666;
+        }
+
+        /* Chart containers */
+        .chart-container {
+            background: rgba(10, 10, 20, 0.5);
+            border: 1px solid rgba(224, 224, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* No data message */
+        .no-data-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(224, 224, 255, 0.1);
+            text-align: center;
+            position: relative;
+        }
+
+        .no-data-icon {
+            font-size: 4rem;
+            color: rgba(224, 224, 255, 0.3);
+            margin-bottom: 1.5rem;
+        }
+
+        .no-data-title {
+            font-size: 1.5rem;
+            color: var(--hologram-white);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .no-data-message {
+            color: rgba(224, 224, 255, 0.6);
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(224, 224, 255, 0.1);
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #666;
+        }
+
+        .status-text {
+            color: rgba(224, 224, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Floating action button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-purple);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(157, 0, 255, 0.4);
+            transition: all 0.3s;
+            z-index: 1000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fab::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 0%,
+                transparent 45%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 55%,
+                transparent 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(157, 0, 255, 0.6);
+        }
+
+        /* Loading animation */
+        .loading-wave {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            gap: 5px;
+        }
+
+        .loading-bar {
+            width: 4px;
+            background: var(--quantum-blue);
+            animation: wave 1.2s ease-in-out infinite;
+        }
+
+        .loading-bar:nth-child(1) { animation-delay: 0s; height: 40px; }
+        .loading-bar:nth-child(2) { animation-delay: 0.1s; height: 50px; }
+        .loading-bar:nth-child(3) { animation-delay: 0.2s; height: 60px; }
+        .loading-bar:nth-child(4) { animation-delay: 0.3s; height: 50px; }
+        .loading-bar:nth-child(5) { animation-delay: 0.4s; height: 40px; }
+
+        @keyframes wave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(2); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .nav-tabs {
+                flex-wrap: wrap;
+                gap: 0.8rem;
+            }
+
+            .nav-tab {
+                min-width: 120px;
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .fridge-stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .fab {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix rain effect -->
+    <div class="matrix-rain" id="matrixRain"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <h1><i class="fas fa-network-wired"></i> NILM Smart Device Monitor</h1>
+        <p>Non-Intrusive Load Monitoring System - AI-Powered Fridge Detection</p>
+    </header>
+
+    <!-- Navigation -->
+    <div class="nav-tabs">
+        <a href="#" onclick="navigateToMainDashboard(); return false;" class="nav-tab">
+            <i class="fas fa-chart-line"></i> Main Dashboard
+        </a>
+        <a href="#" onclick="return false;" class="nav-tab active">
+            <i class="fas fa-plug"></i> Device Monitor
+        </a>
+        <a href="#" onclick="navigateToAI(); return false;" class="nav-tab">
+            <i class="fas fa-robot"></i> AI Insights
+        </a>
+        <a href="#" onclick="navigateToDashboard(); return false;" class="nav-tab">
+            <i class="fas fa-arrow-left"></i> Return to Dashboard
+        </a>
+    </div>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard">
+        <!-- System Overview -->
+        <section class="system-overview">
+            <div class="overview-grid">
+                <div class="overview-metric">
+                    <div class="overview-value" id="totalDevices">0</div>
+                    <div class="overview-label">Active Devices</div>
+                    <span class="overview-status" id="systemStatus">WAITING FOR DATA</span>
+                </div>
+                <div class="overview-metric">
+                    <div class="overview-value" id="totalPower">0W</div>
+                    <div class="overview-label">Total Power</div>
+                </div>
+                <div class="overview-metric">
+                    <div class="overview-value" id="efficiency">0%</div>
+                    <div class="overview-label">Efficiency</div>
+                </div>
+                <div class="overview-metric">
+                    <div class="overview-value" id="savings">₹0</div>
+                    <div class="overview-label">Potential Savings</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fridge Monitoring Section -->
+        <section class="fridge-section" id="fridgeSection">
+            <div class="fridge-header">
+                <i class="fas fa-snowflake fridge-icon"></i>
+                <h2 class="fridge-title">Refrigerator Energy Monitor</h2>
+            </div>
+            
+            <div class="fridge-stats-grid">
+    <div class="fridge-stat-card">
+        <div class="fridge-stat-value" id="avgFridgePower">0 W</div>
+        <div class="fridge-stat-label">Average Power (when on)</div>
+    </div>
+    <div class="fridge-stat-card">
+        <div class="fridge-stat-value" id="maxFridgePower">0 W</div>
+        <div class="fridge-stat-label">Peak Power</div>
+    </div>
+    <div class="fridge-stat-card">
+        <div class="fridge-stat-value" id="fridgeRuntime">0 min</div>
+        <div class="fridge-stat-label">Runtime (Last 24h)</div>
+    </div>
+    <div class="fridge-stat-card">
+        <div class="fridge-stat-value" id="fridgeEnergy">0 kWh</div>
+        <div class="fridge-stat-label">Energy Consumed</div>
+    </div>
+</div>
+            <!-- Fridge Power Chart -->
+            <div class="chart-container">
+                <div id="fridgePowerChart" style="height: 300px;"></div>
+            </div>
+        </section>
+
+        <!-- Detected Appliances Section -->
+        <section class="devices-section" id="devicesSection">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-microchip"></i> Detected Appliances
+                </h2>
+                <div style="color: rgba(224, 224, 255, 0.6);">
+                    Last scan: <span id="lastScan">--:--:--</span>
+                </div>
+            </div>
+            <div class="devices-grid" id="devicesGrid">
+                <!-- Fridge Card (will be populated by JS) -->
+                <div class="device-card fridge-card" id="fridgeCard">
+                    <div class="device-header">
+                        <span class="device-name"><i class="fas fa-snowflake"></i> Refrigerator</span>
+                        <span class="device-power" id="fridgeCardPower">0 W</span>
+                    </div>
+                    <div class="device-energy" id="fridgeCardEnergy">0 kWh today</div>
+                    <div style="margin-top: 1rem;">
+                        <span class="device-status" id="fridgeCardStatus">Unknown</span>
+                    </div>
+                </div>
+                
+                <!-- Main Power Card -->
+                <div class="device-card" id="mainPowerCard">
+                    <div class="device-header">
+                        <span class="device-name"><i class="fas fa-bolt"></i> Main Supply</span>
+                        <span class="device-power" id="mainPower">0 W</span>
+                    </div>
+                    <div class="device-energy" id="mainEnergy">--</div>
+                    <div style="margin-top: 1rem;">
+                        <span class="device-status status-on">Active</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- No Data Message (shown when no data) -->
+        <section class="no-data-section" id="noDataSection" style="display: none;">
+            <div class="no-data-icon">
+                <i class="fas fa-plug"></i>
+            </div>
+            <h2 class="no-data-title">No Device Data Available</h2>
+            <p class="no-data-message">
+                The NILM system is analyzing your power consumption patterns. 
+                Once sufficient data is collected, real-time fridge detection and monitoring will be displayed here.
+            </p>
+            <div class="connection-status">
+                <div class="status-indicator" id="connectionIndicator"></div>
+                <span class="status-text" id="connectionText">Backend Connected</span>
+            </div>
+        </section>
+
+        <!-- Loading indicator -->
+        <div class="loading-wave" id="loadingIndicator">
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+        </div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <div class="fab" onclick="refreshData()">
+        <i class="fas fa-sync-alt"></i>
+    </div>
+
+    <script>
+        // Authentication functions
+        function getAuthHeaders() {
+            const token = getToken();
+            return {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            };
+        }
+        
+        function getToken() {
+            // First try to get from localStorage
+            let token = localStorage.getItem('token');
+            
+            // If not in localStorage, try to get from URL
+            if (!token) {
+                const urlParams = new URLSearchParams(window.location.search);
+                token = urlParams.get('token');
+                
+                // If found in URL, store in localStorage for future use
+                if (token) {
+                    localStorage.setItem('token', token);
+                }
+            }
+            
+            return token;
+        }
+
+        function checkAuthentication() {
+            const token = getToken();
+            
+            if (!token) {
+                window.location.href = '/';
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Navigation functions
+        function navigateToMainDashboard() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = `/dashboard?token=${token}`;
+            } else {
+                console.error('No token found');
+                window.location.href = '/';
+            }
+        }
+
+        function navigateToDashboard() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = `/dashboard?token=${token}`;
+            } else {
+                console.error('No token found');
+                window.location.href = '/';
+            }
+        }
+
+        function navigateToAI() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = `/ai_recommendation?token=${token}`;
+            } else {
+                console.error('No token found');
+                window.location.href = '/';
+            }
+        }
+
+        // Initialize matrix rain effect
+        function initMatrixRain() {
+            const container = document.getElementById('matrixRain');
+            if (!container) return;
+            
+            const columns = Math.floor(window.innerWidth / 20);
+            
+            for (let i = 0; i < columns; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                column.style.left = i * 20 + 'px';
+                column.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                column.style.animationDelay = Math.random() * 5 + 's';
+                column.textContent = Array.from({length: 50}, () => 
+                    String.fromCharCode(0x30A0 + Math.random() * 96)
+                ).join('');
+                container.appendChild(column);
+            }
+        }
+
+        // Chart variables
+        let fridgePowerChart = null;
+
+        // Initialize fridge power chart
+        function initFridgeChart() {
+            fridgePowerChart = Highcharts.chart('fridgePowerChart', {
+                chart: {
+                    type: 'spline',
+                    backgroundColor: 'transparent',
+                    style: {
+                        color: '#e0e0ff'
+                    }
+                },
+                title: {
+                    text: 'Refrigerator Power Consumption',
+                    style: {
+                        color: '#00ffaa',
+                        fontSize: '16px'
+                    }
+                },
+                xAxis: {
+                    type: 'datetime',
+                    labels: {
+                        style: {
+                            color: '#e0e0ff'
+                        }
+                    },
+                    gridLineColor: 'rgba(224, 224, 255, 0.1)'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Power (Watts)',
+                        style: {
+                            color: '#e0e0ff'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            color: '#e0e0ff'
+                        }
+                    },
+                    gridLineColor: 'rgba(224, 224, 255, 0.1)',
+                    plotLines: [{
+                        value: 20,
+                        color: '#ff4757',
+                        dashStyle: 'dash',
+                        width: 1,
+                        label: {
+                            text: 'Threshold',
+                            style: {
+                                color: '#ff4757'
+                            }
+                        }
+                    }]
+                },
+                series: [{
+                    name: 'Fridge Power',
+                    data: [],
+                    color: '#00ffaa',
+                    lineWidth: 2,
+                    marker: {
+                        enabled: false
+                    },
+                    tooltip: {
+                        valueSuffix: ' W'
+                    }
+                }],
+                legend: {
+                    itemStyle: {
+                        color: '#e0e0ff'
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        animation: false
+                    }
+                }
+            });
+        }
+
+        // Fetch and display fridge predictions
+        async function loadFridgePredictions() {
+            if (!checkAuthentication()) return;
+            
+            try {
+                const response = await fetch('/api/nilm/predict?hours=24', {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/';
+                    return;
+                }
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.status === 'success' && data.predictions.length > 0) {
+                        // Hide no data section
+                        document.getElementById('noDataSection').style.display = 'none';
+                        
+                        // Update fridge statistics
+                        updateFridgeStats(data.statistics);
+                        
+                        // Update chart
+                        updateFridgeChart(data.predictions);
+                        
+                        // Update device cards
+                        updateDeviceCards(data);
+                        
+                        // Update system overview
+                        updateSystemOverview(data);
+                        
+                        // Update last scan time
+                        const now = new Date();
+                        document.getElementById('lastScan').textContent = 
+                            `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+                    } else if (data.status === 'insufficient_data') {
+                        document.getElementById('noDataSection').style.display = 'block';
+                        document.getElementById('noDataSection').querySelector('.no-data-message').innerHTML = 
+                            'Collecting data for analysis. Please check back in a few minutes.';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading fridge predictions:', error);
+            }
+        }
+
+        // Update fridge statistics
+        function updateFridgeStats(stats) {
+           
+            document.getElementById('avgFridgePower').textContent = Math.round(stats.avg_fridge_power_w) + ' W';
+            document.getElementById('maxFridgePower').textContent = Math.round(stats.max_fridge_power_w) + ' W';
+            document.getElementById('fridgeRuntime').textContent = stats.fridge_runtime_minutes + ' min';
+            
+            document.getElementById('fridgeEnergy').textContent = stats.total_fridge_energy_kwh.toFixed(3) + ' kWh';
+            
+            // Update status indicator
+            const indicator = document.getElementById('fridgeStatusIndicator');
+            const statusText = document.getElementById('fridgeStatusText');
+            
+            if (stats.current_fridge_power > 0) {
+                indicator.className = 'fridge-cycle-indicator fridge-on';
+                statusText.textContent = 'Running';
+                statusText.style.color = 'var(--cyber-green)';
+            } else {
+                indicator.className = 'fridge-cycle-indicator fridge-off';
+                statusText.textContent = 'Off';
+                statusText.style.color = '#666';
+            }
+            
+            // Update fridge card
+            document.getElementById('fridgeCardPower').textContent = Math.round(stats.current_fridge_power) + ' W';
+            document.getElementById('fridgeCardEnergy').textContent = stats.total_fridge_energy_kwh.toFixed(3) + ' kWh today';
+            
+            const cardStatus = document.getElementById('fridgeCardStatus');
+            if (stats.current_fridge_power > 0) {
+                cardStatus.className = 'device-status status-on';
+                cardStatus.textContent = 'Running';
+            } else {
+                cardStatus.className = 'device-status status-off';
+                cardStatus.textContent = 'Off';
+            }
+        }
+
+        // Update fridge chart
+        function updateFridgeChart(predictions) {
+            if (!fridgePowerChart) {
+                initFridgeChart();
+            }
+            
+            const chartData = predictions.map(p => [
+                new Date(p.timestamp).getTime(),
+                p.predicted_fridge_power
+            ]);
+            
+            fridgePowerChart.series[0].setData(chartData);
+        }
+
+        // Update device cards
+        function updateDeviceCards(data) {
+            // Update main power (from latest prediction or from API)
+            if (data.predictions && data.predictions.length > 0) {
+                const latest = data.predictions[data.predictions.length - 1];
+                document.getElementById('mainPower').textContent = Math.round(latest.active_power) + ' W';
+            }
+        }
+
+        // Update system overview
+        // Update system overview
+async function updateSystemOverview(data) {
+    try {
+        // Use the detailed-status endpoint
+        const response = await fetch('/api/nilm/detailed-status', {
+            headers: getAuthHeaders()
+        });
+        
+        if (response.ok) {
+            const statusData = await response.json();
+            
+            document.getElementById('totalDevices').textContent = statusData.activeDevices || 0;
+            document.getElementById('totalPower').textContent = Math.round(statusData.totalPower) + 'W';
+            document.getElementById('efficiency').textContent = (statusData.efficiency || 0) + '%';
+            document.getElementById('savings').textContent = '₹' + (statusData.savings || 0);
+            
+            const systemStatus = document.getElementById('systemStatus');
+            systemStatus.textContent = 'MONITORING';
+            systemStatus.style.background = 'rgba(0, 255, 170, 0.1)';
+            systemStatus.style.color = 'var(--cyber-green)';
+            systemStatus.style.borderColor = 'var(--cyber-green)';
+            
+            // Update main power card (total - fridge)
+            const mainPower = statusData.totalPower - statusData.fridge_power;
+            document.getElementById('mainPower').textContent = Math.round(mainPower) + ' W';
+            
+            // Update connection indicator
+            document.getElementById('connectionIndicator').style.background = 'var(--cyber-green)';
+            document.getElementById('connectionIndicator').style.boxShadow = '0 0 15px var(--cyber-green)';
+            document.getElementById('connectionText').textContent = 'Backend Connected';
+        }
+    } catch (error) {
+        console.error('Error updating system overview:', error);
+    }
+}
+        // Refresh all data
+        function refreshData() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            loadingIndicator.style.display = 'flex';
+            
+            loadFridgePredictions().finally(() => {
+                setTimeout(() => {
+                    loadingIndicator.style.display = 'none';
+                }, 500);
+            });
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication first
+            if (!checkAuthentication()) {
+                return;
+            }
+            
+            initMatrixRain();
+            initFridgeChart();
+            
+            // Initial data load
+            refreshData();
+            
+            // Set up periodic refresh (every 30 seconds)
+            setInterval(refreshData, 30000);
+            
+            console.log('NILM Device Monitor initialized');
+        });
+    </script>
+</body>
+</html>
