@@ -11,7 +11,6 @@
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.0+-orange)
 ![LSTM](https://img.shields.io/badge/NILM-LSTM-red)
 ![DeepSeek](https://img.shields.io/badge/AI-DeepSeek-blue)
-![License](https://img.shields.io/badge/License-MIT-red)
 
 **Real-time Energy Monitoring | AI-Powered Recommendations | NILM Appliance Detection | LSTM Neural Networks | DeepSeek LLM Integration**
 
