@@ -381,6 +381,55 @@
         .fridge-off {
             background: #666;
         }
+                /* AC Section Styles */
+        .ac-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--quantum-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ac-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--quantum-blue), transparent);
+            animation: scanline 3s linear infinite;
+        }
+
+        .ac-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .ac-stat-card {
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .ac-stat-value {
+            font-size: 2rem;
+            color: var(--quantum-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .ac-stat-label {
+            color: rgba(224, 224, 255, 0.7);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
 
         /* Device cards grid */
         .devices-grid {
@@ -675,7 +724,7 @@
             </div>
         </section>
 
-        <!-- Fridge Monitoring Section -->
+                <!-- Fridge Monitoring Section -->
         <section class="fridge-section" id="fridgeSection">
             <div class="fridge-header">
                 <i class="fas fa-snowflake fridge-icon"></i>
@@ -683,29 +732,61 @@
             </div>
             
             <div class="fridge-stats-grid">
-    <div class="fridge-stat-card">
-        <div class="fridge-stat-value" id="avgFridgePower">0 W</div>
-        <div class="fridge-stat-label">Average Power (when on)</div>
-    </div>
-    <div class="fridge-stat-card">
-        <div class="fridge-stat-value" id="maxFridgePower">0 W</div>
-        <div class="fridge-stat-label">Peak Power</div>
-    </div>
-    <div class="fridge-stat-card">
-        <div class="fridge-stat-value" id="fridgeRuntime">0 min</div>
-        <div class="fridge-stat-label">Runtime (Last 24h)</div>
-    </div>
-    <div class="fridge-stat-card">
-        <div class="fridge-stat-value" id="fridgeEnergy">0 kWh</div>
-        <div class="fridge-stat-label">Energy Consumed</div>
-    </div>
-</div>
+                <div class="fridge-stat-card">
+                    <div class="fridge-stat-value" id="avgFridgePower">0 W</div>
+                    <div class="fridge-stat-label">Average Power (when on)</div>
+                </div>
+                <div class="fridge-stat-card">
+                    <div class="fridge-stat-value" id="maxFridgePower">0 W</div>
+                    <div class="fridge-stat-label">Peak Power</div>
+                </div>
+                <div class="fridge-stat-card">
+                    <div class="fridge-stat-value" id="fridgeRuntime">0 min</div>
+                    <div class="fridge-stat-label">Runtime (Last 24h)</div>
+                </div>
+                <div class="fridge-stat-card">
+                    <div class="fridge-stat-value" id="fridgeEnergy">0 kWh</div>
+                    <div class="fridge-stat-label">Energy Consumed</div>
+                </div>
+            </div>
+            
             <!-- Fridge Power Chart -->
             <div class="chart-container">
                 <div id="fridgePowerChart" style="height: 300px;"></div>
             </div>
         </section>
 
+        <!-- AC Monitoring Section -->
+        <section class="ac-section" id="acSection">
+            <div class="fridge-header">
+                <i class="fas fa-wind" style="font-size: 3rem; color: var(--quantum-blue); filter: drop-shadow(0 0 15px var(--quantum-blue));"></i>
+                <h2 class="fridge-title" style="color: var(--quantum-blue);">Air Conditioner Energy Monitor</h2>
+            </div>
+            
+            <div class="ac-stats-grid">
+                <div class="ac-stat-card">
+                    <div class="ac-stat-value" id="avgAcPower">0 W</div>
+                    <div class="ac-stat-label">Average Power (when on)</div>
+                </div>
+                <div class="ac-stat-card">
+                    <div class="ac-stat-value" id="maxAcPower">0 W</div>
+                    <div class="ac-stat-label">Peak Power</div>
+                </div>
+                <div class="ac-stat-card">
+                    <div class="ac-stat-value" id="acRuntime">0 min</div>
+                    <div class="ac-stat-label">Runtime (Last 24h)</div>
+                </div>
+                <div class="ac-stat-card">
+                    <div class="ac-stat-value" id="acEnergy">0 kWh</div>
+                    <div class="ac-stat-label">Energy Consumed</div>
+                </div>
+            </div>
+            
+            <!-- AC Power Chart -->
+            <div class="chart-container">
+                <div id="acPowerChart" style="height: 300px;"></div>
+            </div>
+        </section>
         <!-- Detected Appliances Section -->
         <section class="devices-section" id="devicesSection">
             <div class="section-header">
@@ -726,6 +807,17 @@
                     <div class="device-energy" id="fridgeCardEnergy">0 kWh today</div>
                     <div style="margin-top: 1rem;">
                         <span class="device-status" id="fridgeCardStatus">Unknown</span>
+                    </div>
+                </div>
+                                <!-- AC Card -->
+                <div class="device-card" id="acCard" style="border-color: var(--quantum-blue);">
+                    <div class="device-header">
+                        <span class="device-name"><i class="fas fa-wind"></i> Air Conditioner</span>
+                        <span class="device-power" id="acCardPower" style="color: var(--quantum-blue);">0 W</span>
+                    </div>
+                    <div class="device-energy" id="acCardEnergy">0 kWh today</div>
+                    <div style="margin-top: 1rem;">
+                        <span class="device-status" id="acCardStatus">Unknown</span>
                     </div>
                 </div>
                 
@@ -866,6 +958,7 @@
 
         // Chart variables
         let fridgePowerChart = null;
+        let acPowerChart = null;
 
         // Initialize fridge power chart
         function initFridgeChart() {
@@ -944,6 +1037,49 @@
                         animation: false
                     }
                 }
+            });
+        }
+        
+        // Initialize AC power chart
+        function initAcChart() {
+            acPowerChart = Highcharts.chart('acPowerChart', {
+                chart: {
+                    type: 'spline',
+                    backgroundColor: 'transparent',
+                    style: { color: '#e0e0ff' }
+                },
+                title: {
+                    text: 'Air Conditioner Power Consumption',
+                    style: { color: '#00f0ff', fontSize: '16px' }
+                },
+                xAxis: {
+                    type: 'datetime',
+                    labels: { style: { color: '#e0e0ff' } },
+                    gridLineColor: 'rgba(224, 224, 255, 0.1)'
+                },
+                yAxis: {
+                    title: { text: 'Power (Watts)', style: { color: '#e0e0ff' } },
+                    labels: { style: { color: '#e0e0ff' } },
+                    gridLineColor: 'rgba(224, 224, 255, 0.1)',
+                    plotLines: [{
+                        value: 100,
+                        color: '#ff4757',
+                        dashStyle: 'dash',
+                        width: 1,
+                        label: { text: 'AC Threshold', style: { color: '#ff4757' } }
+                    }]
+                },
+                series: [{
+                    name: 'AC Power',
+                    data: [],
+                    color: '#00f0ff',
+                    lineWidth: 2,
+                    marker: { enabled: false },
+                    tooltip: { valueSuffix: ' W' }
+                }],
+                legend: { itemStyle: { color: '#e0e0ff' } },
+                credits: { enabled: false },
+                plotOptions: { series: { animation: false } }
             });
         }
 
@@ -1046,6 +1182,67 @@
             
             fridgePowerChart.series[0].setData(chartData);
         }
+        
+        // Fetch and display AC predictions
+        async function loadAcPredictions() {
+    if (!checkAuthentication()) return;
+    
+    try {
+        // Make sure this URL is correct
+        const response = await fetch('/api/nilm/ac/predict?hours=24', {
+            headers: getAuthHeaders()
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log('AC Data received:', data);  // Add this to debug
+            
+            if (data.status === 'success' && data.predictions && data.predictions.length > 0) {
+                updateAcStats(data.statistics);
+                updateAcChart(data.predictions);
+                updateAcCard(data.statistics);
+            }
+        }
+    } catch (error) {
+        console.error('Error loading AC predictions:', error);
+    }
+}
+
+        // Update AC statistics
+        function updateAcStats(stats) {
+            document.getElementById('avgAcPower').textContent = Math.round(stats.avg_ac_power_w) + ' W';
+            document.getElementById('maxAcPower').textContent = Math.round(stats.max_ac_power_w) + ' W';
+            document.getElementById('acRuntime').textContent = stats.ac_runtime_minutes + ' min';
+            document.getElementById('acEnergy').textContent = stats.total_ac_energy_kwh.toFixed(3) + ' kWh';
+        }
+
+        // Update AC chart
+        function updateAcChart(predictions) {
+            if (!acPowerChart) initAcChart();
+            
+            const chartData = predictions.map(p => [
+                new Date(p.timestamp).getTime(),
+                p.predicted_ac_power || 0
+            ]);
+            acPowerChart.series[0].setData(chartData);
+        }
+
+        // Update AC card
+        function updateAcCard(stats) {
+            document.getElementById('acCardPower').textContent = Math.round(stats.current_ac_power) + ' W';
+            document.getElementById('acCardEnergy').textContent = stats.total_ac_energy_kwh.toFixed(3) + ' kWh today';
+            
+            const cardStatus = document.getElementById('acCardStatus');
+            if (stats.current_ac_power > 0) {
+                cardStatus.className = 'device-status status-on';
+                cardStatus.textContent = 'Running';
+                cardStatus.style.borderColor = 'var(--quantum-blue)';
+                cardStatus.style.color = 'var(--quantum-blue)';
+            } else {
+                cardStatus.className = 'device-status status-off';
+                cardStatus.textContent = 'Off';
+            }
+        }
 
         // Update device cards
         function updateDeviceCards(data) {
@@ -1092,12 +1289,14 @@ async function updateSystemOverview(data) {
         console.error('Error updating system overview:', error);
     }
 }
-        // Refresh all data
-        function refreshData() {
+                function refreshData() {
             const loadingIndicator = document.getElementById('loadingIndicator');
             loadingIndicator.style.display = 'flex';
             
-            loadFridgePredictions().finally(() => {
+            Promise.all([
+                loadFridgePredictions(),
+                loadAcPredictions()
+            ]).finally(() => {
                 setTimeout(() => {
                     loadingIndicator.style.display = 'none';
                 }, 500);
@@ -1113,7 +1312,7 @@ async function updateSystemOverview(data) {
             
             initMatrixRain();
             initFridgeChart();
-            
+            initAcChart();
             // Initial data load
             refreshData();
             

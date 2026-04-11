@@ -978,15 +978,22 @@ def get_nilm_predictions():
     """Get NILM predictions for the current user"""
     user_id = get_jwt_identity()
     
+    print("=" * 50)
+    print(f"🔵 API CALLED: /api/nilm/predict by user {user_id}")
+    print("=" * 50)
+    
     try:
         # Get query parameters
         hours = request.args.get('hours', default=24, type=int)
+        print(f"📊 Hours requested: {hours}")
         
         with database_session() as session:
-            # Run prediction
+            print("🔄 Calling nilm_predictor.predict_fridge_power...")
             result = nilm_predictor.predict_fridge_power(session, hours)
+            print(f"📦 Result received: {result is not None}")
             
             if result is None:
+                print("❌ Result is None - insufficient data")
                 return jsonify({
                     'status': 'insufficient_data',
                     'message': 'Insufficient data for prediction. Need at least 60 samples.',
@@ -1001,8 +1008,11 @@ def get_nilm_predictions():
                     }
                 })
             
-            # Get only the last 100 points for the chart (to avoid sending too much data)
+            # Get only the last 100 points for the chart
             recent_predictions = result['predictions'][-100:] if len(result['predictions']) > 100 else result['predictions']
+            
+            print(f"✅ Returning {len(recent_predictions)} predictions")
+            print(f"📈 Statistics: {result['statistics']}")
             
             return jsonify({
                 'status': 'success',
@@ -1013,9 +1023,11 @@ def get_nilm_predictions():
             })
             
     except Exception as e:
+        print(f"❌ ERROR in prediction: {str(e)}")
+        import traceback
+        traceback.print_exc()
         app.logger.error(f"Error in NILM prediction for user: {str(e)}")
         return jsonify({'error': str(e)}), 500
-
 @app.route('/api/nilm/fridge/current', methods=['GET'])
 @jwt_required()
 def get_current_fridge_power():
@@ -1076,17 +1088,23 @@ def nilm_detailed_status():
     """Enhanced NILM status endpoint with fridge data"""
     user_id = get_jwt_identity()
     
+    print("=" * 50)
+    print(f"🟢 API CALLED: /api/nilm/detailed-status by user {user_id}")
+    print("=" * 50)
+    
     try:
         # Get user-specific data
         user = User.query.get(user_id)
         if not user:
             return jsonify({"error": "User not found"}), 404
             
-        # Get latest readings - REMOVED user_id filter
+        # Get latest readings
         latest_reading = MCBReading.query.order_by(MCBReading.timestamp.desc()).first()
+        print(f"📊 Latest reading: {latest_reading.power_w if latest_reading else 'None'}W")
         
         # Get fridge prediction statistics
         with database_session() as session:
+            print("🔄 Getting fridge statistics...")
             fridge_result = nilm_predictor.predict_fridge_power(session, hours=24)
             
             if fridge_result and fridge_result['statistics']:
@@ -1095,18 +1113,20 @@ def nilm_detailed_status():
                 fridge_energy = fridge_stats['total_fridge_energy_kwh']
                 avg_power = fridge_stats['avg_fridge_power_w']
                 max_power = fridge_stats['max_fridge_power_w']
+                print(f"✅ Fridge stats - Current: {current_fridge}W, Energy: {fridge_energy}kWh")
             else:
                 current_fridge = 0
                 fridge_energy = 0
                 avg_power = 0
                 max_power = 0
+                print("⚠️ No fridge statistics available")
         
         # Calculate total power (main + fridge)
         main_power = latest_reading.power_w if latest_reading else 0
         total_power = main_power + current_fridge
         
         user_data = {
-            'activeDevices': 2,  # Main + Fridge
+            'activeDevices': 2,
             'totalPower': round(total_power, 2),
             'efficiency': 85,
             'savings': round(fridge_energy * 5, 2),
@@ -1118,10 +1138,183 @@ def nilm_detailed_status():
             'status': 'monitoring' if latest_reading else 'waiting_for_data'
         }
         
+        print(f"📤 Returning user data: {user_data}")
+        
         return jsonify(user_data)
         
     except Exception as e:
+        print(f"❌ ERROR in status: {str(e)}")
+        import traceback
+        traceback.print_exc()
         app.logger.error(f"Error in status: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+@app.route('/api/nilm/ac/predict', methods=['GET'])
+@jwt_required()
+def get_ac_predictions():
+    """Get AC NILM predictions for the current user"""
+    user_id = get_jwt_identity()
+    
+    print("=" * 50)
+    print(f"🔵 API CALLED: /api/nilm/ac/predict by user {user_id}")
+    print("=" * 50)
+    
+    try:
+        hours = request.args.get('hours', default=24, type=int)
+        print(f"📊 Hours requested: {hours}")
+        
+        with database_session() as session:
+            print("🔄 Calling nilm_predictor.predict_ac_power...")
+            result = nilm_predictor.predict_ac_power(session, hours)
+            print(f"📦 AC Result received: {result is not None}")
+            
+            if result is None:
+                print("❌ AC Result is None - insufficient data")
+                return jsonify({
+                    'status': 'insufficient_data',
+                    'message': 'Insufficient data for AC prediction. Need at least 60 samples.',
+                    'predictions': [],
+                    'statistics': {
+                        'total_ac_energy_kwh': 0,
+                        'avg_ac_power_w': 0,
+                        'max_ac_power_w': 0,
+                        'ac_runtime_minutes': 0,
+                        'ac_on_off_cycles': 0,
+                        'current_ac_power': 0
+                    }
+                })
+            
+            # Get only the last 100 points for the chart
+            recent_predictions = result['predictions'][-100:] if len(result['predictions']) > 100 else result['predictions']
+            
+            print(f"✅ Returning {len(recent_predictions)} AC predictions")
+            print(f"📈 AC Statistics: {result['statistics']}")
+            
+            return jsonify({
+                'status': 'success',
+                'predictions': recent_predictions,
+                'statistics': result['statistics'],
+                'total_samples': len(result['predictions']),
+                'hours_analyzed': hours
+            })
+            
+    except Exception as e:
+        print(f"❌ ERROR in AC prediction: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        app.logger.error(f"Error in AC NILM prediction: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/nilm/ac/current', methods=['GET'])
+@jwt_required()
+def get_current_ac_power():
+    """Get current AC power prediction"""
+    user_id = get_jwt_identity()
+    
+    try:
+        with database_session() as session:
+            # Get last 60 readings for prediction
+            query = text("""
+                SELECT timestamp, active_power as active_power
+                FROM mcb_readings_new
+                ORDER BY timestamp DESC
+                LIMIT 60
+            """)
+            
+            result = session.execute(query)
+            data = result.fetchall()
+            
+            if len(data) < 60:
+                return jsonify({
+                    'status': 'insufficient_data',
+                    'current_power': 0,
+                    'message': 'Need more data for AC prediction'
+                })
+            
+            # Reverse to get chronological order
+            data = data[::-1]
+            
+            # Extract power values
+            mains_power = np.array([row[1] for row in data]).reshape(-1, 1)
+            
+            # Scale using AC mains scaler and predict
+            mains_scaled = nilm_predictor.ac_mains_scaler.transform(mains_power)
+            X_input = np.array([mains_scaled.flatten()])
+            
+            y_pred_norm = nilm_predictor.ac_model.predict(X_input, verbose=0)
+            y_pred_watts = nilm_predictor.ac_scaler.inverse_transform(y_pred_norm)
+            
+            current_power = float(y_pred_watts[0][0])
+            
+            # Apply AC threshold
+            if current_power < nilm_predictor.AC_THRESHOLD:
+                current_power = 0
+            
+            return jsonify({
+                'status': 'success',
+                'current_power': round(current_power, 2),
+                'timestamp': data[-1][0].isoformat() if data else None
+            })
+            
+    except Exception as e:
+        app.logger.error(f"Error getting current AC power: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/nilm/ac/detailed-status')
+@jwt_required()
+def ac_detailed_status():
+    """Enhanced NILM status endpoint with AC data"""
+    user_id = get_jwt_identity()
+    
+    print("=" * 50)
+    print(f"🟢 API CALLED: /api/nilm/ac/detailed-status by user {user_id}")
+    print("=" * 50)
+    
+    try:
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+            
+        # Get AC prediction statistics
+        with database_session() as session:
+            print("🔄 Getting AC statistics...")
+            ac_result = nilm_predictor.predict_ac_power(session, hours=24)
+            
+            if ac_result and ac_result['statistics']:
+                ac_stats = ac_result['statistics']
+                current_ac = ac_stats['current_ac_power']
+                ac_energy = ac_stats['total_ac_energy_kwh']
+                avg_power = ac_stats['avg_ac_power_w']
+                max_power = ac_stats['max_ac_power_w']
+                runtime = ac_stats['ac_runtime_minutes']
+                print(f"✅ AC stats - Current: {current_ac}W, Energy: {ac_energy}kWh, Runtime: {runtime}min")
+            else:
+                current_ac = 0
+                ac_energy = 0
+                avg_power = 0
+                max_power = 0
+                runtime = 0
+                print("⚠️ No AC statistics available")
+        
+        ac_data = {
+            'ac_power': round(current_ac, 2),
+            'ac_energy': round(ac_energy, 3),
+            'avg_ac_power': round(avg_power, 2),
+            'max_ac_power': round(max_power, 2),
+            'ac_runtime': runtime,
+            'status': 'active' if current_ac > 0 else 'inactive',
+            'user_id': user_id
+        }
+        
+        print(f"📤 Returning AC data: {ac_data}")
+        
+        return jsonify(ac_data)
+        
+    except Exception as e:
+        print(f"❌ ERROR in AC status: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 # Database connection pool monitoring
 @event.listens_for(engine.pool, "checkout")
