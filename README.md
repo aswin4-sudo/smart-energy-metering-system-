@@ -129,7 +129,7 @@
 ## 📁 Complete File Structure
 
 ```
-bash
+```bash
 bitminds/
 ├── 🐍 Python Backend Files
 │   ├── app.py                    # Main Flask application (routes, MQTT, WebSocket)
