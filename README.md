@@ -3,7 +3,7 @@
 ```markdown
 # ⚡ BitMinds - AI-Powered Energy Intelligence Platform
 
-**This is an AI-powered energy management platform that transforms how households and businesses monitor electricity usage. It connects to ESP32 sensors via MQTT protocol to capture real-time voltage, current, and power data every second. Using advanced LSTM neural networks, it performs Non-Intrusive Load Monitoring (NILM) to detect individual appliances like refrigerators and AC units from a single mains meter without extra sensors. The platform provides an interactive dashboard with live gauges, 60-day bill predictions using tiered Indian pricing, and personalized energy-saving recommendations powered by DeepSeek AI. Built with Flask backend, PostgreSQL database, Redis cache, and WebSocket for real-time updates, this solution helps users reduce electricity costs by up to 30% through actionable insights and historical analytics.
+This is an AI-powered energy management platform that transforms how households and businesses monitor electricity usage. It connects to ESP32 sensors via MQTT protocol to capture real-time voltage, current, and power data every second. Using advanced LSTM neural networks, it performs Non-Intrusive Load Monitoring (NILM) to detect individual appliances like refrigerators and AC units from a single mains meter without extra sensors. The platform provides an interactive dashboard with live gauges, 60-day bill predictions using tiered Indian pricing, and personalized energy-saving recommendations powered by DeepSeek AI. Built with Flask backend, PostgreSQL database, Redis cache, and WebSocket for real-time updates, this solution helps users reduce electricity costs by up to 30% through actionable insights and historical analytics.
 
 ---
 
