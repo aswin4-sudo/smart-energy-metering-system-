@@ -3,17 +3,7 @@
 ```markdown
 # ⚡ BitMinds - AI-Powered Energy Intelligence Platform
 
-**BitMinds** is a complete energy intelligence platform that monitors real-time energy consumption, detects appliances using AI, predicts bills, and provides actionable insights to reduce energy costs by up to 30%.
-
----
-
-## 📖 What is BitMinds?
-
-BitMinds solves the problem of energy waste by using **Machine Learning** to understand your electricity usage from a single meter. No need for multiple sensors!
-
-**The Problem:** You get one electricity bill but don't know which appliance costs the most.
-
-**The Solution:** BitMinds uses AI to break down your total consumption into individual appliances (Refrigerator, AC, etc.) and tells you exactly where to save.
+**complete energy intelligence platform that monitors real-time energy consumption, detects appliances using AI, predicts bills, and provides actionable insights to reduce energy costs by up to 30%.
 
 ---
 
