@@ -3,19 +3,6 @@
 ```markdown
 # ⚡ BitMinds - AI-Powered Energy Intelligence Platform
 
-![Python](https://img.shields.io/badge/Python-3.10-blue)
-![Flask](https://img.shields.io/badge/Flask-2.3-green)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.13-orange)
-![MQTT](https://img.shields.io/badge/MQTT-Mosquitto-red)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E)
-![Docker](https://img.shields.io/badge/Docker-2496ED)
-![Nginx](https://img.shields.io/badge/Nginx-009639)
-![AWS](https://img.shields.io/badge/AWS-FF9900)
-![License](https://img.shields.io/badge/License-MIT-green)
-
 **BitMinds** is a complete energy intelligence platform that monitors real-time energy consumption, detects appliances using AI, predicts bills, and provides actionable insights to reduce energy costs by up to 30%.
 
 ---
