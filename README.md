@@ -130,7 +130,6 @@
 
 ```
 bitminds/
-│
 ├── 🐍 Python Backend Files
 │   ├── app.py                    # Main Flask application (routes, MQTT, WebSocket)
 │   ├── auth.py                   # JWT authentication endpoints
