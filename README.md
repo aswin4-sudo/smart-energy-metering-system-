@@ -1,4 +1,4 @@
-# 📚 **BitMinds**
+# 📚 **ENERGY MONITORING SYSTEM**
 
 # ⚡ BitMinds - AI-Powered Energy Intelligence Platform
 
